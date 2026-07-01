@@ -5,7 +5,7 @@
 - **Scope:** Local-only. Bonus/cloud/tunnels are **out of scope**. Gmail report is **in scope** (config-toggleable, §9).
 - **Status legend:** ⬜ not started · 🟨 in progress · ✅ done
 - **Owner:** solo (developer) unless noted.
-- **Definition of Done (global):** file ≤150 LOC · tests written · `ruff` clean · coverage ≥85% for the module · `uv run` verified.
+- **Definition of Done (global):** file ≤150 LOC · **TDD** tests (test-first/alongside) · docstrings on every module/class/function · relative imports only · `ruff` clean · coverage ≥85% for the module · `uv run` verified.
 
 ---
 
@@ -54,10 +54,14 @@
 - [ ] ⬜ **Tests M5**: heuristic legality; Q-update math (seeded); strategy selection via config.
 
 ## Phase 6 — GUI, Docs, Polish  (Milestone M6)
-- [ ] ⬜ **`gui/app.py`**: real-time board, agent moves, barriers (excluded from coverage).
-- [ ] ⬜ **`README.md`**: install/usage, config guide, **Dec-POMDP formalism** ⟨n,S,{Aᵢ},P,R,{Ωᵢ},O,γ⟩, orchestration-challenge analysis, screenshots.
+- [ ] ⬜ **`gui/app.py`**: real-time board, agent moves, barriers (excluded from coverage). *DoD:* apply Nielsen heuristics (status visibility, error prevention, minimalist), accessible colors/labels.
+- [ ] ⬜ **UI documentation (§10.2)**: screenshot every state (start, mid-pursuit, barrier, capture, timeout) into `assets/`; describe the user workflow + accessibility notes.
+- [ ] ⬜ **`README.md` (§2.1, user-manual grade)**: install/troubleshooting, usage/flags, **examples & demos**, config guide, **contribution guidelines**, **license & credits/attribution**, **Dec-POMDP formalism** ⟨n,S,{Aᵢ},P,R,{Ωᵢ},O,γ⟩, orchestration-challenge analysis, screenshots.
 - [ ] ⬜ **`docs/prompt_book.md`**: significant prompts, context/goal, iterations.
-- [ ] ⬜ **Cost analysis** section: token in/out + $ estimate table (cloud LLM).
+- [ ] ⬜ **Analysis notebook (§9.2)**: learning curves + sensitivity analysis with **LaTeX equations** (Bellman) and **academic references**.
+- [ ] ⬜ **Cost analysis** section: token in/out + $ estimate table (cloud LLM) + optimization notes.
+- [ ] ⬜ **Automated test report (§6.4)**: `pytest --cov --cov-report=html` + `pytest-html` saved to `results/`.
+- [ ] ⬜ **Tag release** `v1.0.0` (§8.2).
 - [ ] ⬜ **Final gates**: `ruff check` = 0 · `pytest --cov` ≥85% · all files ≤150 LOC · clean `uv run`.
 
 ---
@@ -68,7 +72,11 @@
 - [ ] ⬜ SDK architecture; API gatekeeper on all external calls; no code duplication.
 - [ ] ⬜ Config-driven (0 hard-coded values); `.env-example`; no secrets in source.
 - [ ] ⬜ `uv` only; `pyproject.toml` + `uv.lock` committed.
-- [ ] ⬜ Clean git history; license + third-party attribution.
+- [ ] ⬜ Clean git history; feature branches + PRs; tagged releases; license + third-party attribution.
+- [ ] ⬜ Every `__init__.py` sets `__all__` + `__version__`; imports relative (no absolute paths).
+- [ ] ⬜ Building-block modules validate Input/Output/Setup at boundaries (§16); extension points documented (§12).
+- [ ] ⬜ ISO/IEC 25010 alignment noted in README (§13); Nielsen heuristics applied to GUI (§10).
+- [ ] ⬜ Automated HTML test + coverage report generated (§6.4).
 
 ## Explicitly NOT doing (no-bonus scope)
 - [ ] 🚫 Cloud deployment (Prefect Cloud) / public hosting.

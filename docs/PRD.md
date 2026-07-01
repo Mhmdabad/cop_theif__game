@@ -47,7 +47,7 @@ formally as a **Dec-POMDP** (Decentralized Partially Observable Markov Decision 
 ### 2.1 Measurable Goals
 | # | Goal | Success Metric |
 |---|------|----------------|
-| G1 | Two independent MCP servers (cop, thief) run locally | Both start on separate `localhost` ports and expose their tools |
+| G1 | Two role-capable MCP agent servers (A, B) run locally | Both start on separate `localhost` ports, expose tools, accept either role |
 | G2 | Agents communicate only in natural language | No raw coordinates cross the wire; messages are free text |
 | G3 | A full **game** (6 sub-games) runs end-to-end | Orchestrator completes 6 legal sub-games and produces a report |
 | G4 | Partial observability enforced | Agents receive observations limited by `vision_radius`, not full state |
@@ -74,6 +74,10 @@ formally as a **Dec-POMDP** (Decentralized Partially Observable Markov Decision 
 - **Sub-game:** one pursuit round, **≤ 25 moves**. Turn-based; the **Thief moves first**, then the
   Cop, repeating. Each turn an agent either **moves one cell** or performs its **special action**.
 - **Game:** a sequence of **6 sub-games**; results accumulate and are reported together.
+- **Role assignment (local 3/3 swap):** the two agents are **role-capable**, not role-fixed. The
+  orchestrator assigns roles per sub-game — **sub-games 1–3: Agent-A = Cop, Agent-B = Thief;
+  sub-games 4–6: roles swap** (Agent-B = Cop, Agent-A = Thief). Each agent therefore plays **3 as Cop
+  and 3 as Thief**, mirroring the competition's per-team aggregate.
 - **Cop win (capture):** the Cop lands on the **exact cell** occupied by the Thief.
 - **Thief win (evasion):** the Thief survives all **25 moves** without being caught.
 - **Barriers (Cop-only special action):** instead of moving, the Cop places a **barrier** on its
@@ -87,12 +91,16 @@ formally as a **Dec-POMDP** (Decentralized Partially Observable Markov Decision 
 | Cop wins | `scoring.cop_win` (20) | `scoring.thief_loss` (5) |
 | Thief wins | `scoring.cop_loss` (5) | `scoring.thief_win` (10) |
 
-Over a full game the group plays **3 sub-games as Cop + 3 as Thief**: max **90**, min **30** points.
-(For a local single-group run, both agents are ours; the report accumulates `cop` and `thief` totals.)
+With the 3/3 swap, **each agent** plays 3 as Cop + 3 as Thief, so **each agent's aggregate** ranges
+max **90** / min **30** points. The report tracks totals **per role** (`cop`/`thief`) *and* **per
+agent** (`agent_a`/`agent_b`).
 
 ### 3.3 Agents & Communication
-- Each agent is a standalone **MCP server** built with **FastMCP**, exposing tools for mutual
-  authentication of location, sending messages, and receiving them.
+- There are **two role-capable agents**, each a standalone **MCP server** built with **FastMCP**
+  (same implementation, two instances on separate ports). Each exposes tools for mutual authentication
+  of location, sending messages, and receiving them, and accepts a **role** (cop/thief) per sub-game.
+- The cop-role agent may place barriers; the thief-role agent may not — the server enables the correct
+  action set for the assigned role.
 - On each turn an agent produces a **natural-language message** describing its intent, its (partial)
   observation, or a possible **deception** attempt. The receiving agent uses its **LLM** to interpret
   the message, assess the situation, and choose its next action.
@@ -118,10 +126,12 @@ All tunable values come from `config/config.json` (no hard-coding): `grid_size`,
 
 ### 3.7 Reporting
 - Emit the **internal game JSON report** (`results/game_report.json`) with: `group_name`, `students`,
-  `github_repo`, `cop_mcp_url`, `thief_mcp_url` (local URLs), `timezone`, `sub_games[]`, and `totals`.
+  `github_repo`, `agent_a_mcp_url`, `agent_b_mcp_url` (local URLs), `timezone`, `sub_games[]` (each
+  recording which agent held the cop/thief role), and `totals` (per role **and** per agent).
 - The report body is **JSON only** (no free text) to allow automated grading.
-- **Gmail send (assignment §9, required):** at the end of a full game the **Cop agent** triggers an
-  automatic summary that emails the JSON report to the instructor address
+- **Gmail send (assignment §9, required):** at the end of a full game the **agent holding the Cop role
+  in the final sub-game** triggers (via the orchestrator) an automatic summary that emails the JSON
+  report to the instructor address
   (`rmisegal+uoh26b@gmail.com`) via the **Gmail API**, using **token-based auth** (OAuth client secret
   + stored token) rather than a password.
 - The email send is **config-toggleable** (`reporting.email_enabled`): the JSON report is always

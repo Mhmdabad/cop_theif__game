@@ -247,11 +247,19 @@ cop_theif__game/
 ## 7. Quality Gates & Tooling
 - **Package manager:** `uv` only (`uv sync`, `uv run`, `uv add`, `uv lock`).
 - **Lint:** `ruff check` → 0 violations (`E,F,W,I,N,UP,B,C4,SIM`).
-- **Tests:** `pytest` + `pytest-cov`, `fail_under = 85` (omit `main.py`, `gui/*`).
+- **Tests:** `pytest` + `pytest-cov`, `fail_under = 85` (omit `main.py`, `gui/*`). Written **TDD /
+  Red-Green-Refactor** (test-first or alongside). An **HTML test + coverage report** is generated
+  (`pytest --cov --cov-report=html`, `pytest-html`) and saved under `results/`.
 - **Files:** ≤150 LOC each; split per the strategies in guidelines §3.2.
+- **Docs in code:** docstrings on every module/class/function; comments explain the *why*.
+- **Imports:** relative / package-qualified only — no absolute paths (§14.3); each `__init__.py` sets
+  `__all__` and `__version__` (§14.2).
 - **Versioning:** `shared/version.py` and every config JSON start at `1.00`; startup validates config version.
+- **Git (§8.2):** feature branches + PRs; clean history; tag releases (`v1.0.0`) at each milestone.
 - **Security:** provider key via env; `.env` ignored; `.env-example` committed; Gmail `credentials.json` + `token.json` git-ignored.
-- **Parallelism:** MCP servers run as separate processes; LLM/MCP I/O is I/O-bound (threaded), guarded by the gatekeeper.
+- **Parallelism & thread safety (§15):** MCP servers run as separate processes; LLM/MCP I/O is
+  I/O-bound (threaded), guarded by the gatekeeper; shared state protected with locks + `queue.Queue`;
+  context managers for cleanup; no races/deadlocks.
 
 ---
 
@@ -263,3 +271,36 @@ cop_theif__game/
 | Non-determinism breaks tests | Mock LLM/MCP in unit tests; seed Q-Learning; deterministic engine tests |
 | Two agents deadlock / no progress | 25-move cap guarantees termination (Thief win on timeout) |
 | Token cost creep | Short prompts, cost tracking table in README, cap via gatekeeper |
+
+---
+
+## 9. Extensibility, Building Blocks & Standards
+
+### 9.1 Extension points (§12.1)
+| Interface | Purpose | Add a new one by |
+|---|---|---|
+| `LLMProvider` | swap the reasoning model | implement `complete()` in a new `<x>_provider.py`; select via config |
+| `Strategy` | swap move-selection logic | implement `choose_action()`; select via config |
+| `ReportSink` | swap report delivery | implement `emit(report)`; register in the sink list |
+
+### 9.2 Building-block contract (§16)
+Every service module declares its **Input / Output / Setup** and validates them at the boundary
+(dependency-injected for testability). Example:
+```
+GameEngine
+  Input:  Action (Move|PlaceBarrier), current GridState
+  Output: new GridState + outcome flags (capture|timeout|ongoing)
+  Setup:  grid_size, max_moves, max_barriers (from config)
+  Validates: bounds, legal move, barrier quota, agent turn
+```
+
+### 9.3 ISO/IEC 25010 mapping (§13)
+| Attribute | How it is met |
+|---|---|
+| Functional suitability | Rules/scoring match the spec; verified by engine tests |
+| Performance efficiency | Gatekeeper rate-limits; I/O threaded; short prompts |
+| Reliability | Technical-loss re-run; retries; deterministic engine |
+| Security | Secrets via env; token-based Gmail OAuth; no exposed endpoints |
+| Maintainability | SDK layering, ≤150 LOC files, no duplication, plugin interfaces |
+| Portability | `uv`-managed; Windows + Linux; relative paths |
+| Usability | Real-time GUI + CLI; Nielsen heuristics; accessible visuals |

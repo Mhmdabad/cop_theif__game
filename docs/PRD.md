@@ -143,6 +143,18 @@ All tunable values come from `config/config.json` (no hard-coding): `grid_size`,
   `token.json` are git-ignored (never committed).
 - **Reliability:** graceful handling of LLM/MCP timeouts; technical-loss detection and re-run.
 - **Portability:** runs on Windows (primary dev OS) and Linux via `uv`.
+- **Maintainability & Extensibility (§12):** documented extension points — `LLMProvider`, `Strategy`,
+  and `ReportSink` are plugin interfaces; new providers/strategies/sinks are added without touching
+  core. Building-block modules follow Single Responsibility + Separation of Concerns.
+- **Documentation (§3.3):** every module/class/function has a docstring; comments explain the *why*;
+  imports are relative / package-qualified (no absolute paths, §14.3); `__init__.py` exposes `__all__`.
+- **Usability / UX (§10, Nielsen heuristics):** the GUI targets visibility of system status,
+  match to the real world, error prevention, recognition over recall, and aesthetic-minimalist design;
+  accessible color palette, clear labels, and screenshots of every state in the README.
+- **Standards (§13):** the project is designed against **ISO/IEC 25010** — functional suitability,
+  performance efficiency, reliability, security, maintainability, and portability.
+- **Concurrency safety (§15):** MCP servers are separate processes; shared orchestrator/gatekeeper
+  state is protected with locks and `queue.Queue`; no race conditions or deadlocks.
 
 ### 3.10 User Stories
 - *As course staff*, I run one command and get a valid JSON report I can grade automatically.

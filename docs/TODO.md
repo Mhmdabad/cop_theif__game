@@ -2,7 +2,7 @@
 
 - **Project:** `cop_theif__game` (Exercise 6 — Dual AI Agent Pursuit via MCP)
 - **Version:** 1.00
-- **Scope:** Local-only. Bonus/cloud/tunnels/Gmail are **out of scope**.
+- **Scope:** Local-only. Bonus/cloud/tunnels are **out of scope**. Gmail report is **in scope** (config-toggleable, §9).
 - **Status legend:** ⬜ not started · 🟨 in progress · ✅ done
 - **Owner:** solo (developer) unless noted.
 - **Definition of Done (global):** file ≤150 LOC · tests written · `ruff` clean · coverage ≥85% for the module · `uv run` verified.
@@ -12,10 +12,10 @@
 ## Phase 0 — Project Scaffolding  (Milestone M0)
 - [ ] ⬜ **Init `uv` project**: `pyproject.toml`, `uv.lock`, Python 3.10+ target. *DoD:* `uv sync` succeeds.
 - [ ] ⬜ **Package skeleton** `src/copthief/` with `__init__.py` (`__version__`) in every subdir.
-- [ ] ⬜ **`.gitignore`** (`.env`, `*.key`, `*.pem`, `results/*.log`) + **`.env-example`** (`ANTHROPIC_API_KEY=`).
+- [ ] ⬜ **`.gitignore`** (`.env`, `*.key`, `*.pem`, `credentials.json`, `token.json`, `results/*.log`) + **`.env-example`** (`ANTHROPIC_API_KEY=`).
 - [ ] ⬜ **Tooling config** in `pyproject.toml`: ruff (`E,F,W,I,N,UP,B,C4,SIM`), coverage `fail_under=85`.
 - [ ] ⬜ **`shared/version.py`** = `1.00`; **`config/config.json`** + **`rate_limits.json`** (version `1.00`).
-- [ ] ⬜ **Dedicated sub-PRDs**: `PRD_game_engine.md`, `PRD_mcp_orchestration.md`, `PRD_q_learning.md`.
+- [ ] ⬜ **Dedicated sub-PRDs**: `PRD_game_engine.md`, `PRD_mcp_orchestration.md`, `PRD_q_learning.md`, `PRD_reporting.md`.
 
 ## Phase 1 — Game Engine & Rules  (Milestone M1) — *no LLM/MCP yet*
 - [ ] ⬜ **`constants.py`**: directions (8-way), agent roles, outcomes.
@@ -40,9 +40,11 @@
 - [ ] ⬜ **Tests M3**: mocked servers/LLM — turn ordering, illegal-intent fallback to heuristic, technical-loss re-run.
 
 ## Phase 4 — Full Local Run & Reporting  (Milestone M4)
-- [ ] ⬜ **`reporting/game_report.py`**: assemble internal JSON (schema in PLAN §4.3), JSON-only body, write to `results/`.
+- [ ] ⬜ **`reporting/game_report.py`**: assemble internal JSON (schema in PLAN §4.3), JSON-only body.
+- [ ] ⬜ **`reporting/sinks.py`**: `ReportSink` (ABC) + `FileReportSink` (always writes `results/game_report.json`).
+- [ ] ⬜ **`reporting/gmail_sender.py`** + `GmailReportSink` (§9): Cop agent emails JSON to instructor via Gmail API, token-based OAuth; fires only when `reporting.email_enabled`. *DoD:* Gmail client mocked in tests; manual send verified once with real token.
 - [ ] ⬜ **`main.py` CLI**: `uv run copthief --config config/config.json` plays a full game locally.
-- [ ] ⬜ **End-to-end integration test**: 6 sub-games (mocked LLM) → valid report + correct totals.
+- [ ] ⬜ **End-to-end integration test**: 6 sub-games (mocked LLM) → valid report + correct totals; email send mocked.
 - [ ] ⬜ **Sanity-check ladder** (2×2 → 5×5) runs green.
 
 ## Phase 5 — Strategy Layer  (Milestone M5)
@@ -70,6 +72,7 @@
 
 ## Explicitly NOT doing (no-bonus scope)
 - [ ] 🚫 Cloud deployment (Prefect Cloud) / public hosting.
-- [ ] 🚫 Tunnels / reverse proxy (ngrok, localtonet, Nginx) + public OAuth.
+- [ ] 🚫 Tunnels / reverse proxy (ngrok, localtonet, Nginx) + public MCP OAuth.
 - [ ] 🚫 Inter-group competition game + `bonus_game` JSON report.
-- [ ] 🚫 Gmail API email report (write report to local file instead).
+
+> **In scope (corrected):** Gmail API email report (§9) — required core feature, config-toggleable.

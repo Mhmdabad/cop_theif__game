@@ -3,7 +3,7 @@
 - **Project:** `cop_theif__game` (Exercise 6 — Dual AI Agent Pursuit via MCP)
 - **Version:** 1.00
 - **Companion docs:** `PRD.md`, `TODO.md`
-- **Scope:** Local-only. No cloud, no tunnels, no bonus competition, no Gmail.
+- **Scope:** Local-only. No cloud, no tunnels, no bonus competition. **Gmail report kept (config-toggleable, §9).**
 
 ---
 
@@ -43,6 +43,15 @@ engine (illegal/garbled intents fall back to the heuristic).
 **Decision:** `Strategy` is an interface; `HeuristicStrategy` (default) and `QLearningStrategy`
 (optional, config-selected) both implement it. **Rationale:** Assignment §8 is optional/recommended;
 keep it isolated so the core run never depends on it.
+
+### ADR-7 — Gmail report via a toggleable `ReportSink` (JSON always written; email opt-in)
+**Decision:** Reporting is split behind a `ReportSink` abstraction: `FileReportSink` always writes
+`results/game_report.json`; `GmailReportSink` additionally emails the JSON to the instructor when
+`reporting.email_enabled` is true. Delivery uses the **Gmail API** with **token-based OAuth** (client
+secret + stored `token.json`), never a password. **Rationale:** Assignment §9 requires the Cop agent
+to email the report — it is core, not bonus — but forcing Google setup during local dev is friction;
+the toggle keeps both concerns satisfied. **Trade-off:** an extra Google dependency, isolated to one
+module. **Alternatives:** always-email (rejected: blocks offline dev); file-only (rejected: violates §9).
 
 ---
 
@@ -98,7 +107,9 @@ keep it isolated so the core run never depends on it.
 - `mcp/client.py` — MCP client wrapper used by the orchestrator.
 - `llm/provider.py` — `LLMProvider` interface; `anthropic_provider.py`, `openai_provider.py`.
 - `shared/gatekeeper.py`, `shared/config.py`, `shared/version.py`, `constants.py`.
-- `reporting/game_report.py` — builds + writes the internal JSON report.
+- `reporting/game_report.py` — builds the internal JSON report.
+- `reporting/sinks.py` — `ReportSink` (ABC), `FileReportSink`, `GmailReportSink`.
+- `reporting/gmail_sender.py` — Gmail-API client (token-based OAuth) used by `GmailReportSink`.
 - `gui/app.py` — real-time board renderer (kept out of coverage).
 
 ### 2.4 Code (Level 4)
@@ -149,7 +160,13 @@ exception/timeout → mark `technical_loss`, discard, re-run to keep 6 valid sub
   "vision_radius": 2,
   "scoring": { "cop_win": 20, "thief_win": 10, "cop_loss": 5, "thief_loss": 5 },
   "llm": { "provider": "anthropic", "model": "claude-sonnet-5", "temperature": 0.7 },
-  "mcp": { "cop_port": 8101, "thief_port": 8102, "host": "127.0.0.1" }
+  "mcp": { "cop_port": 8101, "thief_port": 8102, "host": "127.0.0.1" },
+  "reporting": {
+    "email_enabled": false,
+    "instructor_email": "rmisegal+uoh26b@gmail.com",
+    "gmail_credentials_path": "credentials.json",
+    "gmail_token_path": "token.json"
+  }
 }
 ```
 
@@ -201,7 +218,7 @@ cop_theif__game/
 │   ├── agents/{strategy,heuristic,qlearning}.py
 │   ├── mcp/{cop_server,thief_server,client}.py
 │   ├── llm/{provider,anthropic_provider,openai_provider}.py
-│   ├── reporting/game_report.py
+│   ├── reporting/{game_report,sinks,gmail_sender}.py
 │   ├── gui/app.py
 │   └── shared/{gatekeeper,config,version}.py
 ├── tests/{unit,integration}/  # mirror src/, conftest.py
@@ -233,7 +250,7 @@ cop_theif__game/
 - **Tests:** `pytest` + `pytest-cov`, `fail_under = 85` (omit `main.py`, `gui/*`).
 - **Files:** ≤150 LOC each; split per the strategies in guidelines §3.2.
 - **Versioning:** `shared/version.py` and every config JSON start at `1.00`; startup validates config version.
-- **Security:** provider key via env; `.env` ignored; `.env-example` committed.
+- **Security:** provider key via env; `.env` ignored; `.env-example` committed; Gmail `credentials.json` + `token.json` git-ignored.
 - **Parallelism:** MCP servers run as separate processes; LLM/MCP I/O is I/O-bound (threaded), guarded by the gatekeeper.
 
 ---

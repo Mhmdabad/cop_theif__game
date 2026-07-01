@@ -33,14 +33,15 @@
 - [ ] ⬜ **Tests M2**: config version mismatch, gatekeeper overflow/retry, provider selection (mocked).
 
 ## Phase 3 — MCP Servers & Orchestration  (Milestone M3)
-- [ ] ⬜ **`mcp/cop_server.py`** & **`mcp/thief_server.py`** (FastMCP): tools `receive_message`, `report_observation`, `propose_action`, `authenticate_location`. *DoD:* both start on configured ports.
+- [ ] ⬜ **`mcp/agent_server.py`** (FastMCP, **role-capable**): tools `receive_message`, `report_observation`, `propose_action`, `authenticate_location`; accepts assigned role (enables barrier action only for cop). *DoD:* one implementation launched as Agent-A + Agent-B on configured ports.
 - [ ] ⬜ **`mcp/client.py`**: orchestrator-side MCP client wrapper (all calls via gatekeeper).
-- [ ] ⬜ **`services/dialogue.py`**: build prompts, parse NL message → intended `Action`; enforce partial observation (`vision_radius`).
-- [ ] ⬜ **`services/orchestrator.py`**: turn loop (Thief-first), NL exchange, apply action, technical-loss detection + re-run to keep 6 valid sub-games.
-- [ ] ⬜ **Tests M3**: mocked servers/LLM — turn ordering, illegal-intent fallback to heuristic, technical-loss re-run.
+- [ ] ⬜ **`services/role_assigner.py`** `RoleAssigner`: sub-game index → `{A,B}→{cop,thief}` with 3/3 swap at `roles.swap_at_subgame`. *DoD:* each agent plays 3 cop + 3 thief across a game.
+- [ ] ⬜ **`services/dialogue.py`**: build role-appropriate prompts, parse NL message → intended `Action`; enforce partial observation (`vision_radius`).
+- [ ] ⬜ **`services/orchestrator.py`**: turn loop (Thief-first), role assignment per sub-game, NL exchange, apply action, technical-loss detection + re-run to keep 6 valid sub-games.
+- [ ] ⬜ **Tests M3**: mocked servers/LLM — role assignment + swap, turn ordering, illegal-intent fallback to heuristic, technical-loss re-run.
 
 ## Phase 4 — Full Local Run & Reporting  (Milestone M4)
-- [ ] ⬜ **`reporting/game_report.py`**: assemble internal JSON (schema in PLAN §4.3), JSON-only body.
+- [ ] ⬜ **`reporting/game_report.py`**: assemble internal JSON (schema in PLAN §4.3), JSON-only body; each sub-game records `cop_agent`/`thief_agent`; totals **by_role** + **by_agent**.
 - [ ] ⬜ **`reporting/sinks.py`**: `ReportSink` (ABC) + `FileReportSink` (always writes `results/game_report.json`).
 - [ ] ⬜ **`reporting/gmail_sender.py`** + `GmailReportSink` (§9): Cop agent emails JSON to instructor via Gmail API, token-based OAuth; fires only when `reporting.email_enabled`. *DoD:* Gmail client mocked in tests; manual send verified once with real token.
 - [ ] ⬜ **`main.py` CLI**: `uv run copthief --config config/config.json` plays a full game locally.

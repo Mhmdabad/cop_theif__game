@@ -9,11 +9,14 @@
 
 ## 1. Architecture Decision Records (ADRs)
 
-### ADR-1 — Two independent MCP servers + a central orchestrator
-**Decision:** Cop and Thief are each a standalone FastMCP server; a separate **orchestrator**
-(MCP client + game engine + LLM client) drives the turn loop.
-**Rationale:** Matches the Dec-POMDP model — agents are autonomous and cannot inspect each other.
-**Alternatives:** single process with two objects (rejected: no real decentralization);
+### ADR-1 — Two independent, role-capable MCP servers + a central orchestrator
+**Decision:** Two agents (Agent-A, Agent-B) are each a standalone FastMCP server built from the **same
+role-capable implementation**, run as two instances on separate ports; a separate **orchestrator**
+(MCP client + game engine + LLM client) drives the turn loop and assigns each agent a role per sub-game.
+**Rationale:** Matches the Dec-POMDP model — agents are autonomous and cannot inspect each other — and
+supports the local 3/3 role-swap (ADR-8).
+**Alternatives:** role-fixed `cop_server`/`thief_server` (rejected: can't swap roles);
+single process with two objects (rejected: no real decentralization);
 direct agent-to-agent RPC (rejected: bypasses the natural-language requirement).
 
 ### ADR-2 — Cloud LLM API, provider-abstracted (default Anthropic Claude)
@@ -43,6 +46,14 @@ engine (illegal/garbled intents fall back to the heuristic).
 **Decision:** `Strategy` is an interface; `HeuristicStrategy` (default) and `QLearningStrategy`
 (optional, config-selected) both implement it. **Rationale:** Assignment §8 is optional/recommended;
 keep it isolated so the core run never depends on it.
+
+### ADR-8 — Role assignment as an orchestrator concern (3/3 swap)
+**Decision:** Agents are role-agnostic; the **orchestrator** owns role assignment via a `RoleAssigner`
+— sub-games 1–3 `{A:cop, B:thief}`, sub-games 4–6 `{A:thief, B:cop}`. The assigned role travels with
+each turn (enables/disables the barrier action and picks the role-appropriate strategy/prompt).
+**Rationale:** Keeps the servers symmetric and lets one implementation cover both roles; mirrors the
+competition's per-team aggregate so each agent is scored over 3 cop + 3 thief games.
+**Trade-off:** the server must branch on role (slightly more logic) — isolated behind the role param.
 
 ### ADR-7 — Gmail report via a toggleable `ReportSink` (JSON always written; email opt-in)
 **Decision:** Reporting is split behind a `ReportSink` abstraction: `FileReportSink` always writes
@@ -80,14 +91,15 @@ module. **Alternatives:** always-email (rejected: blocks offline dev); file-only
 |                     Local Machine (localhost)                    |
 |                                                                  |
 |  +------------------+     MCP (HTTP)     +---------------------+  |
-|  |  Cop MCP Server  |<------------------>|                     |  |
-|  |  (FastMCP, :8101)|                    |    Orchestrator     |  |
-|  +------------------+                    |  (MCP client +      |  |
-|                                          |   game engine +     |  |
+|  |  Agent-A Server  |<------------------>|   Orchestrator      |  |
+|  | (FastMCP, :8101) |                    |  (MCP client +      |  |
+|  |  role-capable    |                    |   game engine +     |  |
+|  +------------------+                    |   RoleAssigner +    |  |
 |  +------------------+     MCP (HTTP)     |   LLM client +      |  |
-|  | Thief MCP Server |<------------------>|   gatekeeper + SDK) |  |
-|  |  (FastMCP, :8102)|                    |                     |  |
-|  +------------------+                    +----------+----------+  |
+|  |  Agent-B Server  |<------------------>|   gatekeeper + SDK) |  |
+|  | (FastMCP, :8102) |                    |                     |  |
+|  |  role-capable    |                    +----------+----------+  |
+|  +------------------+                               |             |
 |                                                     | renders     |
 |                                          +----------v----------+  |
 |                                          |        GUI          |  |
@@ -98,12 +110,13 @@ module. **Alternatives:** always-email (rejected: blocks offline dev); file-only
 ### 2.3 Component (Level 3) — inside the orchestrator
 - `sdk/sdk.py` — `CopThiefSDK`: single entry point (`play_game`, `play_sub_game`, `report`).
 - `services/orchestrator.py` — turn loop, dialogue sequencing, technical-loss/re-run.
+- `services/role_assigner.py` — `RoleAssigner`: maps sub-game index → `{agent: role}` (3/3 swap).
 - `services/game_engine.py` — grid state machine, movement, capture, win detection.
 - `services/barriers.py` — barrier placement + Thief-impassability rules.
 - `services/scoring.py` — per-sub-game and totals scoring.
 - `services/dialogue.py` — builds prompts, parses NL messages into intended actions.
 - `agents/strategy.py` — `Strategy` interface; `heuristic.py`, `qlearning.py`.
-- `mcp/cop_server.py`, `mcp/thief_server.py` — FastMCP servers (tools/resources).
+- `mcp/agent_server.py` — one role-capable FastMCP server (tools/resources); launched twice (A, B).
 - `mcp/client.py` — MCP client wrapper used by the orchestrator.
 - `llm/provider.py` — `LLMProvider` interface; `anthropic_provider.py`, `openai_provider.py`.
 - `shared/gatekeeper.py`, `shared/config.py`, `shared/version.py`, `constants.py`.
@@ -129,7 +142,8 @@ LLMProvider(ABC)     -> complete(prompt, tools) -> Response
 
 ## 3. UML — Sub-game Turn Sequence
 ```
-Orchestrator      ThiefServer        LLM          CopServer
+Orchestrator     ThiefRoleAgent      LLM        CopRoleAgent
+ (RoleAssigner picks who is cop/thief for this sub-game)
      |  observe(thief) |              |               |
      |---------------->|              |               |
      |  thief NL msg   |              |               |
@@ -140,8 +154,9 @@ Orchestrator      ThiefServer        LLM          CopServer
      |<-------------------------------|               |
      |  apply to GameEngine ; check capture/timeout   |
      |  render GUI ; append turn to sub_game log      |
-     |  (repeat, roles alternate, thief-first)        |
+     |  (repeat within sub-game, thief-first)         |
 ```
+The Thief/Cop roles above are bound to Agent-A/Agent-B per the 3/3 swap (sub-games 1–3 vs 4–6).
 Termination: capture (Cop win) → score; 25 moves reached (Thief win) → score;
 exception/timeout → mark `technical_loss`, discard, re-run to keep 6 valid sub-games.
 
@@ -160,7 +175,8 @@ exception/timeout → mark `technical_loss`, discard, re-run to keep 6 valid sub
   "vision_radius": 2,
   "scoring": { "cop_win": 20, "thief_win": 10, "cop_loss": 5, "thief_loss": 5 },
   "llm": { "provider": "anthropic", "model": "claude-sonnet-5", "temperature": 0.7 },
-  "mcp": { "cop_port": 8101, "thief_port": 8102, "host": "127.0.0.1" },
+  "mcp": { "agent_a_port": 8101, "agent_b_port": 8102, "host": "127.0.0.1" },
+  "roles": { "swap_at_subgame": 4 },
   "reporting": {
     "email_enabled": false,
     "instructor_email": "rmisegal+uoh26b@gmail.com",
@@ -184,13 +200,17 @@ exception/timeout → mark `technical_loss`, discard, re-run to keep 6 valid sub
   "group_name": "Team-<name>",
   "students": [],
   "github_repo": "https://github.com/<user>/cop_theif__game",
-  "cop_mcp_url": "http://127.0.0.1:8101",
-  "thief_mcp_url": "http://127.0.0.1:8102",
+  "agent_a_mcp_url": "http://127.0.0.1:8101",
+  "agent_b_mcp_url": "http://127.0.0.1:8102",
   "timezone": "Asia/Jerusalem",
   "sub_games": [
-    { "index": 1, "winner": "cop", "moves": 12, "cop_score": 20, "thief_score": 5 }
+    { "index": 1, "cop_agent": "A", "thief_agent": "B",
+      "winner": "cop", "moves": 12, "cop_score": 20, "thief_score": 5 }
   ],
-  "totals": { "cop": 0, "thief": 0 }
+  "totals": {
+    "by_role": { "cop": 0, "thief": 0 },
+    "by_agent": { "agent_a": 0, "agent_b": 0 }
+  }
 }
 ```
 
@@ -214,9 +234,9 @@ cop_theif__game/
 │   ├── main.py                # CLI entry (uv run copthief)
 │   ├── constants.py
 │   ├── sdk/sdk.py
-│   ├── services/{orchestrator,game_engine,barriers,scoring,dialogue}.py
+│   ├── services/{orchestrator,role_assigner,game_engine,barriers,scoring,dialogue}.py
 │   ├── agents/{strategy,heuristic,qlearning}.py
-│   ├── mcp/{cop_server,thief_server,client}.py
+│   ├── mcp/{agent_server,client}.py
 │   ├── llm/{provider,anthropic_provider,openai_provider}.py
 │   ├── reporting/{game_report,sinks,gmail_sender}.py
 │   ├── gui/app.py

@@ -33,10 +33,12 @@ formally as a **Dec-POMDP** (Decentralized Partially Observable Markov Decision 
 ### 1.4 Out of Scope (explicit — this is the "no bonus" boundary)
 - Cloud deployment (Prefect Cloud, public cloud hosting).
 - Public tunnels / reverse proxies (ngrok, localtonet, Nginx).
-- OAuth / public authentication for exposed endpoints.
+- OAuth / public authentication for **exposed MCP endpoints**.
 - The **inter-group bonus competition** game and its `bonus_game` JSON report.
-- The **Gmail API** automatic email report (section 9 of the assignment). The report is written to a
-  local file instead.
+
+> **Note on Gmail:** The **Gmail API email report is *in scope*** — assignment §9 requires the Cop
+> agent to email the JSON report to the instructor at the end of a game. It is a **core** requirement,
+> independent of the bonus. See §3.7.
 
 ---
 
@@ -118,6 +120,15 @@ All tunable values come from `config/config.json` (no hard-coding): `grid_size`,
 - Emit the **internal game JSON report** (`results/game_report.json`) with: `group_name`, `students`,
   `github_repo`, `cop_mcp_url`, `thief_mcp_url` (local URLs), `timezone`, `sub_games[]`, and `totals`.
 - The report body is **JSON only** (no free text) to allow automated grading.
+- **Gmail send (assignment §9, required):** at the end of a full game the **Cop agent** triggers an
+  automatic summary that emails the JSON report to the instructor address
+  (`rmisegal+uoh26b@gmail.com`) via the **Gmail API**, using **token-based auth** (OAuth client secret
+  + stored token) rather than a password.
+- The email send is **config-toggleable** (`reporting.email_enabled`): the JSON report is always
+  written to `results/` regardless; the email fires only when enabled. This keeps day-to-day local dev
+  friction-free (no Google setup needed) while remaining fully §9-compliant when turned on.
+- **Technical-loss rule (§9):** any sub-game ended by a technical failure is marked `technical_loss`
+  and re-run, so exactly **6 valid** sub-games are reported.
 
 ### 3.8 User Interface
 - A **GUI** renders the grid, live agent movement, and barriers in real time.
@@ -128,7 +139,8 @@ All tunable values come from `config/config.json` (no hard-coding): `grid_size`,
   manager; SDK-layered OOP with no duplication; centralized **API gatekeeper** with config-driven rate
   limits for all LLM/MCP calls.
 - **Security:** no secrets in source; `ANTHROPIC_API_KEY` (or provider key) via environment only;
-  `.env` git-ignored; `.env-example` committed.
+  `.env` git-ignored; `.env-example` committed. Gmail OAuth `credentials.json` and the generated
+  `token.json` are git-ignored (never committed).
 - **Reliability:** graceful handling of LLM/MCP timeouts; technical-loss detection and re-run.
 - **Portability:** runs on Windows (primary dev OS) and Linux via `uv`.
 
@@ -167,3 +179,4 @@ The following mechanisms each get a dedicated PRD before their implementation:
 - `docs/PRD_mcp_orchestration.md` — MCP servers, client, and the natural-language dialogue protocol.
 - `docs/PRD_game_engine.md` — grid state machine, movement, barriers, win/scoring logic.
 - `docs/PRD_q_learning.md` — optional Tabular Q-Learning (state/action/reward, Bellman update).
+- `docs/PRD_reporting.md` — JSON report schema + Gmail-API delivery with token-based auth.

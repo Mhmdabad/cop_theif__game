@@ -51,6 +51,7 @@ async def test_tools_are_registered() -> None:
     server = AgentServer(Role.COP, 8101)
     tools = {tool.name for tool in await server.mcp.list_tools()}
     assert tools == {
+        "set_role",
         "receive_message",
         "report_observation",
         "propose_action",

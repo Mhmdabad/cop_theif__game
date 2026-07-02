@@ -29,6 +29,7 @@ class AgentServer:
         self.role = role
 
     def _register_tools(self) -> None:
+        self.mcp.add_tool(self.set_role)
         self.mcp.add_tool(self.receive_message)
         self.mcp.add_tool(self.report_observation)
         self.mcp.add_tool(self.propose_action)

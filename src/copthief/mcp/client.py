@@ -44,3 +44,7 @@ class AgentClient:
         """Call ``authenticate_location`` and coerce the result to bool."""
         result = self._call_tool("authenticate_location", {"token": token})
         return bool(result)
+
+    def set_role(self, role: str) -> None:
+        """Instruct the remote agent server to switch to ``role``."""
+        self._call_tool("set_role", {"role": role})

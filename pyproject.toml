@@ -5,7 +5,9 @@ description = "Dual AI Agent Pursuit (Cop vs. Thief) via MCP servers — local-o
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Mhmdabad", email = "mhmdabad10@gmail.com" }]
-dependencies = []
+dependencies = [
+    "anthropic>=0.115.1",
+]
 
 [build-system]
 requires = ["hatchling"]

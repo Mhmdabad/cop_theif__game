@@ -12,6 +12,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
+from copthief.reporting.gmail_sender import GmailSender
+
 
 class ReportSink(ABC):
     """Abstract destination for a completed game report."""
@@ -33,4 +35,25 @@ class FileReportSink(ReportSink):
         self.output_path.write_text(
             json.dumps(report, indent=2, ensure_ascii=False),
             encoding="utf-8",
+        )
+
+
+class GmailReportSink(ReportSink):
+    """Email the report to the instructor via the Gmail API."""
+
+    def __init__(
+        self,
+        to_email: str,
+        credentials_path: Path | str = "credentials.json",
+        token_path: Path | str = "token.json",
+    ) -> None:
+        self.to_email = to_email
+        self._sender = GmailSender(credentials_path, token_path)
+
+    def emit(self, report: dict[str, Any]) -> None:
+        """Send ``report`` as a JSON attachment to the configured instructor."""
+        self._sender.send_report(
+            self.to_email,
+            "CopThief Game Report",
+            json.dumps(report, indent=2, ensure_ascii=False),
         )

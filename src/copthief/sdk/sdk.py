@@ -14,7 +14,7 @@ from typing import Any
 from copthief.constants import Outcome, Role
 from copthief.llm.provider import LLMProvider, create_provider
 from copthief.reporting.game_report import build_report
-from copthief.reporting.sinks import FileReportSink, ReportSink
+from copthief.reporting.sinks import FileReportSink, GmailReportSink, ReportSink
 from copthief.services.game_engine import Action, GameEngine
 from copthief.services.scoring import ScoreBook
 from copthief.shared.config import Config
@@ -40,7 +40,7 @@ class CopThiefSDK:
         self.scorebook = ScoreBook(config.scoring)
         self.gatekeeper = gatekeeper or self._default_gatekeeper(rate_limits_config)
         self.provider = provider or create_provider(config.llm)
-        self.sinks = sinks if sinks is not None else [FileReportSink()]
+        self.sinks = sinks if sinks is not None else self._default_sinks()
         self._sub_game_moves: list[int] = []
 
     @staticmethod
@@ -49,6 +49,20 @@ class CopThiefSDK:
             path = Path(__file__).resolve().parents[3] / "config" / "rate_limits.json"
             rate_limits_config = json.loads(path.read_text(encoding="utf-8"))
         return ApiGatekeeper(rate_limits_config)
+
+    def _default_sinks(self) -> list[ReportSink]:
+        """File sink always; Gmail sink only when email is enabled in config."""
+        sinks: list[ReportSink] = [FileReportSink()]
+        reporting = self.config.reporting
+        if reporting.get("email_enabled"):
+            sinks.append(
+                GmailReportSink(
+                    to_email=reporting["instructor_email"],
+                    credentials_path=reporting.get("gmail_credentials_path", "credentials.json"),
+                    token_path=reporting.get("gmail_token_path", "token.json"),
+                )
+            )
+        return sinks
 
     def play_sub_game(
         self,

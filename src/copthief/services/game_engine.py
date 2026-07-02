@@ -43,6 +43,8 @@ class GameEngine:
     Output: new ``GridState`` + ``Outcome`` flag
     Validates: bounds, single-cell step, barrier quota/asymmetry,
                 correct agent's turn.
+    Terminates: Cop win on exact capture; Thief win when ``max_moves``
+                elapse without capture.
     """
 
     def __init__(
@@ -106,6 +108,8 @@ class GameEngine:
 
         if role == Role.COP:
             state.cop_pos = new_pos
+            if state.cop_pos == state.thief_pos:
+                state.outcome = Outcome.COP_WIN
         else:
             state.thief_pos = new_pos
 
@@ -123,6 +127,8 @@ class GameEngine:
     def _advance_turn(self) -> None:
         state = self.state
         state.move_number += 1
+        if state.outcome == Outcome.ONGOING and state.move_number >= self.max_moves:
+            state.outcome = Outcome.THIEF_WIN
         state.turn = Role.COP if state.turn == Role.THIEF else Role.THIEF
 
     def _in_bounds(self, pos: tuple[int, int]) -> bool:

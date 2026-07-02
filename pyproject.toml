@@ -33,6 +33,7 @@ dev = [
   "pytest-cov>=5",
   "matplotlib>=3.10.9",
   "numpy>=2.2.6",
+  "pytest-html>=4.2.0",
 ]
 
 # --- Lint (guidelines §7.1) ---

@@ -43,6 +43,18 @@ jobs:
       - name: Tests + coverage (pytest, fail under 85%)
         run: uv run pytest --cov --cov-report=term-missing
 
+      - name: HTML test + coverage report
+        run: |
+          mkdir -p results
+          uv run pytest --cov --cov-report=html:results/coverage_html --html=results/report.html --self-contained-html
+
+      - name: Upload HTML reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-reports
+          path: results/
+          if-no-files-found: error
+
       - name: 150-line file check
         run: |
           if [ -f scripts/check_line_limit.py ]; then

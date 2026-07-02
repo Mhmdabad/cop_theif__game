@@ -136,6 +136,8 @@ def test_agents_receive_messages() -> None:
 
     client_a = orchestrator.clients["A"]
     client_b = orchestrator.clients["B"]
+    assert client_a._session is not None
+    assert client_b._session is not None
     a_tools = {call.args[0] for call in client_a._session.call_tool.call_args_list}
     b_tools = {call.args[0] for call in client_b._session.call_tool.call_args_list}
     assert "receive_message" in a_tools

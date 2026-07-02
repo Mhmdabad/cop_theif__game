@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -90,7 +91,7 @@ def test_gmail_report_sink_emails_json(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_sdk_adds_gmail_sink_when_email_enabled(
-    tmp_path: pytest.Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.chdir(tmp_path)
     config_data = {

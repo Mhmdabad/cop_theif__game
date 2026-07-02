@@ -8,10 +8,11 @@ reproducible.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from copthief.constants import Outcome
 from copthief.llm.provider import LLMProvider
+from copthief.mcp.client import AgentClient
 from copthief.reporting.game_report import build_report
 from copthief.services.dialogue import DialogueManager
 from copthief.services.game_engine import GameEngine
@@ -82,7 +83,7 @@ def test_six_sub_games_produce_valid_report() -> None:
     dialogue = DialogueManager(vision_radius=2)
     provider = StaticProvider("move north")
     gatekeeper = _gatekeeper()
-    clients: dict[str, FakeClient] = {"A": FakeClient(), "B": FakeClient()}
+    clients = cast(dict[str, AgentClient], {"A": FakeClient(), "B": FakeClient()})
     role_assigner = RoleAssigner(swap_at_subgame=4)
     orchestrator = Orchestrator(
         engine=engine,

@@ -33,4 +33,4 @@ def test_file_report_sink_default_path_is_results_game_report(
 
 def test_report_sink_is_abstract() -> None:
     with pytest.raises(TypeError, match="abstract"):
-        ReportSink()
+        ReportSink()  # type: ignore[abstract]

@@ -32,27 +32,18 @@ def _heuristic_move(role: Role, engine: GameEngine) -> Action:
         target = state.cop_pos
         prefer_closer = False
 
-    best: tuple[int, int] | None = None
-    best_distance: int | None = None
+    candidates: list[tuple[int, tuple[int, int]]] = []
     for d_row, d_col in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
         new_pos = (my_pos[0] + d_row, my_pos[1] + d_col)
         if not engine._in_bounds(new_pos):
             continue
         distance = abs(new_pos[0] - target[0]) + abs(new_pos[1] - target[1])
-        if best is None:
-            best = (d_row, d_col)
-            best_distance = distance
-            continue
-        if prefer_closer:
-            if distance < best_distance:
-                best = (d_row, d_col)
-                best_distance = distance
-        elif distance > best_distance:
-            best = (d_row, d_col)
-            best_distance = distance
+        candidates.append((distance, (d_row, d_col)))
 
-    if best is None:
-        best = (0, 0)
+    if not candidates:
+        return Action(ActionType.MOVE, 0, 0)
+
+    _distance, best = min(candidates) if prefer_closer else max(candidates)
     return Action(ActionType.MOVE, *best)
 
 

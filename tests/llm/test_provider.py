@@ -27,9 +27,10 @@ def test_create_provider_unknown_raises() -> None:
         create_provider({"provider": "unknown", "model": "x"})
 
 
-def test_create_provider_openai_without_package_raises() -> None:
-    with pytest.raises(ImportError):
-        create_provider({"provider": "openai", "model": "gpt"})
+def test_create_provider_openai_returns_openai_provider(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    provider = create_provider({"provider": "openai", "model": "gpt"})
+    assert provider.__class__.__name__ == "OpenAIProvider"
 
 
 def test_subclass_can_complete() -> None:

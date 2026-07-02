@@ -26,7 +26,12 @@ BASE_CFG = {
 
 
 def gatekeeper(
-    *, rpm: int = 100, rph: int = 1000, retries: int = 0, window: float = 60.0
+    *,
+    rpm: int = 100,
+    rph: int = 1000,
+    retries: int = 0,
+    window: float = 60.0,
+    hour_window: float | None = None,
 ) -> ApiGatekeeper:
     cfg = {
         "rate_limits": {
@@ -42,7 +47,11 @@ def gatekeeper(
             },
         }
     }
-    return ApiGatekeeper(cfg, _minute_window_seconds=window, _hour_window_seconds=window * 60)
+    return ApiGatekeeper(
+        cfg,
+        _minute_window_seconds=window,
+        _hour_window_seconds=hour_window if hour_window is not None else window * 60,
+    )
 
 
 def test_concurrent_overflow_queued_without_crash() -> None:
@@ -103,3 +112,17 @@ def test_retries_exhausted_raises_last_exception() -> None:
 
     with pytest.raises(ValueError, match="boom"):
         keeper.execute(always_fails)
+
+
+def test_hour_window_prunes_after_window_seconds() -> None:
+    keeper = gatekeeper(rpm=1000, rph=1, hour_window=0.15)
+    results: list[float] = []
+
+    def mark() -> None:
+        results.append(time.monotonic())
+
+    keeper.execute(mark)
+    keeper.execute(mark)
+
+    delta = results[1] - results[0]
+    assert delta >= 0.1

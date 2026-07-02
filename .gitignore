@@ -21,6 +21,7 @@ token.json
 
 # --- Runtime output ---
 results/*.log
+results/*.json
 
 # --- OS / editor ---
 .DS_Store

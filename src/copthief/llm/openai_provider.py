@@ -9,8 +9,7 @@ try:
     from openai import OpenAI
 except ImportError as exc:  # pragma: no cover - optional dependency
     raise ImportError(
-        "OpenAI provider requires the 'openai' package. "
-        "Install it with: uv add openai"
+        "OpenAI provider requires the 'openai' package. Install it with: uv add openai"
     ) from exc
 
 from copthief.llm.provider import LLMProvider

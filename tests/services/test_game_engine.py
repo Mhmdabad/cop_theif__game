@@ -159,7 +159,6 @@ def test_unsupported_action_type_rejected() -> None:
         engine.apply_action(Role.THIEF, FakeAction())  # type: ignore[arg-type]
 
 
-
 def test_cop_barrier_quota_enforced() -> None:
     engine = GameEngine(grid_size=(5, 5), max_moves=25, max_barriers=1)
     engine.state.turn = Role.COP

@@ -41,7 +41,9 @@ class ApiGatekeeper:
         self._lock = threading.Lock()
         self._minute_window: deque[float] = deque()
         self._hour_window: deque[float] = deque()
-        self._task_queue: queue.Queue[tuple[Callable[..., Any], tuple[Any, ...], dict[str, Any], queue.Queue[Any]]] = queue.Queue()  # noqa: E501
+        self._task_queue: queue.Queue[
+            tuple[Callable[..., Any], tuple[Any, ...], dict[str, Any], queue.Queue[Any]]
+        ] = queue.Queue()  # noqa: E501
         self._logger = logging.getLogger(__name__)
 
         self._worker = threading.Thread(target=self._run, daemon=True)

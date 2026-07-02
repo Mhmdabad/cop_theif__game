@@ -50,4 +50,9 @@ def test_authenticate_location_validates_token() -> None:
 async def test_tools_are_registered() -> None:
     server = AgentServer(Role.COP, 8101)
     tools = {tool.name for tool in await server.mcp.list_tools()}
-    assert tools == {"receive_message", "report_observation", "propose_action", "authenticate_location"}
+    assert tools == {
+        "receive_message",
+        "report_observation",
+        "propose_action",
+        "authenticate_location",
+    }

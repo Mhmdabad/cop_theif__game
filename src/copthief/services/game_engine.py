@@ -94,9 +94,7 @@ class GameEngine:
 
     def _apply_move(self, role: Role, action: Action) -> Outcome:
         if (action.d_row, action.d_col) not in MOVE_VECTORS:
-            raise IllegalMoveError(
-                f"Invalid move vector ({action.d_row}, {action.d_col})"
-            )
+            raise IllegalMoveError(f"Invalid move vector ({action.d_row}, {action.d_col})")
 
         state = self.state
         current = state.cop_pos if role == Role.COP else state.thief_pos

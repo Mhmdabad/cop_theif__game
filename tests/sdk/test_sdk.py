@@ -28,9 +28,7 @@ def _config(**overrides: Any) -> Config:
     return Config(data)
 
 
-def _scripted(
-    cop_moves: list[tuple[int, int]], thief_moves: list[tuple[int, int]]
-) -> Any:
+def _scripted(cop_moves: list[tuple[int, int]], thief_moves: list[tuple[int, int]]) -> Any:
     cop_index = 0
     thief_index = 0
 

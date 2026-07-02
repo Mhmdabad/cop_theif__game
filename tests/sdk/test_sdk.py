@@ -41,6 +41,11 @@ def _metadata(**overrides: Any) -> dict[str, Any]:
     return data
 
 
+def _sdk(**overrides: Any) -> CopThiefSDK:
+    """Build an SDK instance with sinks disabled for test isolation."""
+    return CopThiefSDK(_config(**overrides), sinks=[])
+
+
 def _scripted(cop_moves: list[tuple[int, int]], thief_moves: list[tuple[int, int]]) -> Any:
     cop_index = 0
     thief_index = 0
@@ -59,7 +64,7 @@ def _scripted(cop_moves: list[tuple[int, int]], thief_moves: list[tuple[int, int
 
 
 def test_play_sub_game_records_outcome_and_score() -> None:
-    sdk = CopThiefSDK(_config(grid_size=[2, 2]))
+    sdk = _sdk(grid_size=[2, 2])
     # On a 2x2 board thief moves (1,1)->(0,1); cop then moves (0,0)->(0,1) for capture.
     strategy_a = _scripted(cop_moves=[(0, 1)], thief_moves=[(-1, 0)])
     strategy_b = _scripted(cop_moves=[(0, 1)], thief_moves=[(-1, 0)])
@@ -71,7 +76,7 @@ def test_play_sub_game_records_outcome_and_score() -> None:
 
 
 def test_play_game_swaps_roles_and_builds_report() -> None:
-    sdk = CopThiefSDK(_config(grid_size=[2, 2], num_games=2, swap_at_subgame=2))
+    sdk = _sdk(grid_size=[2, 2], num_games=2, swap_at_subgame=2)
     strategy_a = _scripted(cop_moves=[(0, 1), (0, 1)], thief_moves=[(-1, 0), (-1, 0)])
     strategy_b = _scripted(cop_moves=[(0, 1), (0, 1)], thief_moves=[(-1, 0), (-1, 0)])
 
@@ -86,7 +91,7 @@ def test_play_game_swaps_roles_and_builds_report() -> None:
 
 
 def test_build_report_without_playing_is_empty_totals() -> None:
-    sdk = CopThiefSDK(_config())
+    sdk = _sdk()
     report = sdk.build_report(_metadata(group_name="Empty"))
 
     assert report["sub_games"] == []

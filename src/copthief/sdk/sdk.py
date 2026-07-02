@@ -14,6 +14,7 @@ from typing import Any
 from copthief.constants import Outcome, Role
 from copthief.llm.provider import LLMProvider, create_provider
 from copthief.reporting.game_report import build_report
+from copthief.reporting.sinks import FileReportSink, ReportSink
 from copthief.services.game_engine import Action, GameEngine
 from copthief.services.scoring import ScoreBook
 from copthief.shared.config import Config
@@ -32,12 +33,14 @@ class CopThiefSDK:
         gatekeeper: ApiGatekeeper | None = None,
         provider: LLMProvider | None = None,
         rate_limits_config: dict[str, Any] | None = None,
+        sinks: list[ReportSink] | None = None,
     ):
         self.config = config
         self.engine = GameEngine(config.grid_size, config.max_moves, config.max_barriers)
         self.scorebook = ScoreBook(config.scoring)
         self.gatekeeper = gatekeeper or self._default_gatekeeper(rate_limits_config)
         self.provider = provider or create_provider(config.llm)
+        self.sinks = sinks if sinks is not None else [FileReportSink()]
         self._sub_game_moves: list[int] = []
 
     @staticmethod
@@ -98,4 +101,7 @@ class CopThiefSDK:
             self._sub_game_moves,
             self.scorebook,
         )
-        return report.to_dict()
+        data = report.to_dict()
+        for sink in self.sinks:
+            sink.emit(data)
+        return data

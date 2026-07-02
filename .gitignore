@@ -1,0 +1,29 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- uv / venv ---
+.venv/
+
+# --- Secrets (guidelines §7.4) — never commit ---
+.env
+*.key
+*.pem
+credentials.json
+token.json
+
+# --- Runtime output ---
+results/*.log
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

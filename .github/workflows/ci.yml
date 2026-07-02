@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+# Cancel superseded runs on the same ref (e.g. rapid pushes to a PR).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality-gates:
     name: Quality gates
@@ -18,8 +23,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install workspace (uv sync)
-        run: uv sync
+      # --frozen fails loudly if uv.lock has drifted from pyproject.toml,
+      # enforcing the committed lockfile (guidelines §8.4).
+      - name: Install workspace (uv sync --frozen)
+        run: uv sync --frozen
 
       - name: Lint (ruff check)
         run: uv run ruff check .

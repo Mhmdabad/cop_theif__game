@@ -14,37 +14,34 @@ import argparse
 import sys
 from typing import Any
 
-from copthief.constants import ActionType, Role
+from copthief.agents import Strategy, create_strategy
+from copthief.constants import Role
 from copthief.sdk import CopThiefSDK
+from copthief.services.dialogue import Observation
 from copthief.services.game_engine import Action, GameEngine
 from copthief.shared.config import Config
 
 
-def _heuristic_move(role: Role, engine: GameEngine) -> Action:
-    """Simple local strategy: cop closes distance, thief increases it."""
-    state = engine.state
-    if role == Role.COP:
-        my_pos = state.cop_pos
-        target = state.thief_pos
-        prefer_closer = True
-    else:
-        my_pos = state.thief_pos
-        target = state.cop_pos
-        prefer_closer = False
+def _strategy_fn(strategy: Strategy, agent_label: str) -> Any:
+    """Adapt a ``Strategy`` to the SDK's ``(role, engine) -> Action`` signature."""
 
-    candidates: list[tuple[int, tuple[int, int]]] = []
-    for d_row, d_col in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-        new_pos = (my_pos[0] + d_row, my_pos[1] + d_col)
-        if not engine._in_bounds(new_pos):
-            continue
-        distance = abs(new_pos[0] - target[0]) + abs(new_pos[1] - target[1])
-        candidates.append((distance, (d_row, d_col)))
+    def choose(role: Role, engine: GameEngine) -> Action:
+        state = engine.state
+        if role.value == "cop":
+            my_pos, opp_pos = state.cop_pos, state.thief_pos
+        else:
+            my_pos, opp_pos = state.thief_pos, state.cop_pos
+        observation = Observation(
+            role=role,
+            my_position=my_pos,
+            opponent_position=opp_pos,
+            barriers=set(state.barriers),
+            last_message="",
+            move_number=state.move_number,
+        )
+        return strategy.choose_action(observation, "")
 
-    if not candidates:
-        return Action(ActionType.MOVE, 0, 0)
-
-    _distance, best = min(candidates) if prefer_closer else max(candidates)
-    return Action(ActionType.MOVE, *best)
+    return choose
 
 
 def _metadata_from_config(config: Config) -> dict[str, Any]:
@@ -70,7 +67,13 @@ def run(config_path: str) -> int:
         f"on a {config.grid_size[0]}x{config.grid_size[1]} grid"
     )
 
-    report = sdk.play_game(_heuristic_move, _heuristic_move, _metadata_from_config(config))
+    strategy_a = create_strategy(config._data, config.grid_size)
+    strategy_b = create_strategy(config._data, config.grid_size)
+    report = sdk.play_game(
+        _strategy_fn(strategy_a, "A"),
+        _strategy_fn(strategy_b, "B"),
+        _metadata_from_config(config),
+    )
 
     print("\nTurn log / Sub-game results:")
     for sub_game in report["sub_games"]:

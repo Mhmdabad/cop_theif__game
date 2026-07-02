@@ -14,5 +14,8 @@
     "instructor_email": "rmisegal+uoh26b@gmail.com",
     "gmail_credentials_path": "credentials.json",
     "gmail_token_path": "token.json"
+  },
+  "strategy": {
+    "type": "heuristic"
   }
 }

@@ -13,6 +13,7 @@ from typing import Any
 
 from copthief.constants import Outcome, Role
 from copthief.llm.provider import LLMProvider, create_provider
+from copthief.reporting.game_report import build_report
 from copthief.services.game_engine import Action, GameEngine
 from copthief.services.scoring import ScoreBook
 from copthief.shared.config import Config
@@ -91,21 +92,10 @@ class CopThiefSDK:
 
     def build_report(self, metadata: dict[str, Any]) -> dict[str, Any]:
         """Assemble the internal JSON game report from recorded sub-games."""
-        totals = self.scorebook.totals()
-        sub_games = [
-            {
-                "index": i + 1,
-                "cop_agent": entry.cop_agent,
-                "thief_agent": entry.thief_agent,
-                "winner": entry.outcome.value,
-                "moves": self._sub_game_moves[i],
-                "cop_score": entry.cop_score,
-                "thief_score": entry.thief_score,
-            }
-            for i, entry in enumerate(self.scorebook.sub_games)
-        ]
-        return {
-            **metadata,
-            "sub_games": sub_games,
-            "totals": {"by_role": totals.by_role, "by_agent": totals.by_agent},
-        }
+        report = build_report(
+            metadata,
+            self.scorebook.sub_games,
+            self._sub_game_moves,
+            self.scorebook,
+        )
+        return report.to_dict()

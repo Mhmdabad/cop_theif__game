@@ -28,6 +28,19 @@ def _config(**overrides: Any) -> Config:
     return Config(data)
 
 
+def _metadata(**overrides: Any) -> dict[str, Any]:
+    data = {
+        "group_name": "Test",
+        "students": [],
+        "github_repo": "https://github.com/test/cop_theif__game",
+        "agent_a_mcp_url": "http://127.0.0.1:8101",
+        "agent_b_mcp_url": "http://127.0.0.1:8102",
+        "timezone": "Asia/Jerusalem",
+    }
+    data.update(overrides)
+    return data
+
+
 def _scripted(cop_moves: list[tuple[int, int]], thief_moves: list[tuple[int, int]]) -> Any:
     cop_index = 0
     thief_index = 0
@@ -62,7 +75,7 @@ def test_play_game_swaps_roles_and_builds_report() -> None:
     strategy_a = _scripted(cop_moves=[(0, 1), (0, 1)], thief_moves=[(-1, 0), (-1, 0)])
     strategy_b = _scripted(cop_moves=[(0, 1), (0, 1)], thief_moves=[(-1, 0), (-1, 0)])
 
-    report = sdk.play_game(strategy_a, strategy_b, {"group_name": "Test"})
+    report = sdk.play_game(strategy_a, strategy_b, _metadata())
 
     assert report["group_name"] == "Test"
     assert len(report["sub_games"]) == 2
@@ -74,7 +87,7 @@ def test_play_game_swaps_roles_and_builds_report() -> None:
 
 def test_build_report_without_playing_is_empty_totals() -> None:
     sdk = CopThiefSDK(_config())
-    report = sdk.build_report({"group_name": "Empty"})
+    report = sdk.build_report(_metadata(group_name="Empty"))
 
     assert report["sub_games"] == []
     assert report["totals"]["by_role"] == {"cop": 0, "thief": 0}

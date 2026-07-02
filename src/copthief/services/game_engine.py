@@ -90,7 +90,7 @@ class GameEngine:
         if action.type == ActionType.PLACE_BARRIER:
             return self._apply_barrier(role)
 
-        raise IllegalMoveError(f"Unsupported action type: {action.type.value}")
+        raise IllegalMoveError(f"Unsupported action type: {action.type!r}")
 
     def _apply_move(self, role: Role, action: Action) -> Outcome:
         if (action.d_row, action.d_col) not in MOVE_VECTORS:

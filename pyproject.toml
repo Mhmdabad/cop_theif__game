@@ -7,6 +7,7 @@ license = { text = "MIT" }
 authors = [{ name = "Mhmdabad", email = "mhmdabad10@gmail.com" }]
 dependencies = [
     "anthropic>=0.115.1",
+    "fastmcp>=3.4.2",
     "openai>=2.44.0",
 ]
 

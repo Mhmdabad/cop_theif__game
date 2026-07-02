@@ -54,19 +54,22 @@ class QLearningStrategy(Strategy):
             if 0 <= pos[0] + d_row < self.rows and 0 <= pos[1] + d_col < self.cols
         ]
 
-    def choose_action(self, observation: Observation, last_message: str) -> Action:
-        """Epsilon-greedy selection over the four orthogonal moves."""
+    def select_action(self, observation: Observation) -> int:
+        """Epsilon-greedy selection returning the action index."""
         pos = observation.my_position
         legal = self._legal_actions(pos)
         state = self._state_index(pos)
 
         if self.rng.random() < self.epsilon:
-            action_index = self.rng.choice(legal)
-        else:
-            best_value = max(self.q[state][i] for i in legal)
-            best_actions = [i for i in legal if self.q[state][i] == best_value]
-            action_index = self.rng.choice(best_actions)
+            return self.rng.choice(legal)
 
+        best_value = max(self.q[state][i] for i in legal)
+        best_actions = [i for i in legal if self.q[state][i] == best_value]
+        return self.rng.choice(best_actions)
+
+    def choose_action(self, observation: Observation, last_message: str) -> Action:
+        """Epsilon-greedy selection over the four orthogonal moves."""
+        action_index = self.select_action(observation)
         d_row, d_col = _ACTION_DELTAS[action_index]
         return Action(ActionType.MOVE, d_row, d_col)
 

@@ -140,3 +140,32 @@ def test_agents_receive_messages() -> None:
     b_tools = {call.args[0] for call in client_b._session.call_tool.call_args_list}
     assert "receive_message" in a_tools
     assert "receive_message" in b_tools
+
+
+def test_thief_moves_first() -> None:
+    orchestrator, provider = _orchestrator(
+        grid_size=(3, 3),
+        responses=[
+            "move north-west",
+            "move south-east",
+        ],
+    )
+    orchestrator.run_sub_game(1)
+
+    first_prompt = provider.complete.call_args_list[0].args[0]
+    assert "thief" in first_prompt.lower()
+
+
+def test_illegal_intent_falls_back_to_heuristic() -> None:
+    orchestrator, provider = _orchestrator(
+        grid_size=(2, 2),
+        responses=[
+            "I like pizza",  # unparsable -> heuristic moves thief (1,1)->(0,1)
+            "move east",  # cop (0,0)->(0,1) capture
+        ],
+    )
+
+    result = orchestrator.run_sub_game(1)
+
+    assert result.outcome == Outcome.COP_WIN
+    assert provider.complete.call_count == 2

@@ -11,11 +11,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from copthief.constants import Outcome
+from copthief.constants import MOVE_VECTORS, ActionType, Outcome, Role
 from copthief.llm.provider import LLMProvider
 from copthief.mcp.client import AgentClient
 from copthief.services.dialogue import DialogueManager
-from copthief.services.game_engine import GameEngine
+from copthief.services.exceptions import IllegalMoveError
+from copthief.services.game_engine import Action, GameEngine
 from copthief.services.role_assigner import RoleAssigner
 from copthief.shared.gatekeeper import ApiGatekeeper
 
@@ -95,13 +96,59 @@ class Orchestrator:
             agent = role_to_agent[role.value]
             opponent = "B" if agent == "A" else "A"
 
-            observation = self.dialogue.observe(role, self.engine.state, received[agent])
-            prompt = self.dialogue.prompt(observation)
-            intent_text = self.gatekeeper.execute(self.provider.complete, prompt)
-            action = self.dialogue.parse_intent(intent_text)
+            action = self._choose_action(role, received[agent])
+            intent_text = action.type.value
 
             self.clients[opponent].receive_message(intent_text)
-            self.engine.apply_action(role, action)
+            try:
+                self.engine.apply_action(role, action)
+            except IllegalMoveError:
+                action = self._heuristic_action(role)
+                self.engine.apply_action(role, action)
             received[opponent] = intent_text
 
         return self.engine.state.outcome
+
+    def _choose_action(self, role: Role, last_message: str) -> Action:
+        """Ask the LLM for an intent; fall back to heuristic if it is garbled."""
+        observation = self.dialogue.observe(role, self.engine.state, last_message)
+        prompt = self.dialogue.prompt(observation)
+        intent_text = self.gatekeeper.execute(self.provider.complete, prompt)
+        try:
+            return self.dialogue.parse_intent(intent_text)
+        except IllegalMoveError:
+            return self._heuristic_action(role)
+
+    def _heuristic_action(self, role: Role) -> Action:
+        """Deterministic fallback: cop closes distance, thief increases it."""
+        state = self.engine.state
+        my_pos = state.cop_pos if role == Role.COP else state.thief_pos
+        target = state.thief_pos if role == Role.COP else state.cop_pos
+
+        best: tuple[int, int] | None = None
+        best_score: int | None = None
+        for d_row, d_col in MOVE_VECTORS:
+            new_pos = (my_pos[0] + d_row, my_pos[1] + d_col)
+            if not self.engine._in_bounds(new_pos):
+                continue
+            if role == Role.THIEF and not self.engine.barrier_manager.passable(role, new_pos):
+                continue
+            score = self._chebyshev(new_pos, target)
+            if role == Role.COP:
+                if best_score is None or score < best_score:
+                    best = (d_row, d_col)
+                    best_score = score
+            else:
+                if best_score is None or score > best_score:
+                    best = (d_row, d_col)
+                    best_score = score
+
+        if best:
+            return Action(ActionType.MOVE, *best)
+        if role == Role.COP:
+            return Action(ActionType.PLACE_BARRIER)
+        raise IllegalMoveError("Thief has no legal heuristic move")
+
+    @staticmethod
+    def _chebyshev(a: tuple[int, int], b: tuple[int, int]) -> int:
+        return max(abs(a[0] - b[0]), abs(a[1] - b[1]))

@@ -14,10 +14,12 @@ Gmail report delivery.
 4. [Usage and flags](#usage-and-flags)
 5. [Examples and demos](#examples-and-demos)
 6. [Configuration guide](#configuration-guide)
-7. [Dec-POMDP model](#dec-pomdp-model)
-8. [Orchestration challenge](#orchestration-challenge)
-9. [Screenshots](#screenshots)
-10. [Development](#development)
+7. [Cost analysis](#cost-analysis)
+8. [Dec-POMDP model](#dec-pomdp-model)
+9. [Orchestration challenge](#orchestration-challenge)
+10. [Screenshots](#screenshots)
+11. [Development](#development)
+12. [License and credits](#license-and-credits)
 11. [License and credits](#license-and-credits)
 
 ## Overview
@@ -163,6 +165,28 @@ analysis, and heatmaps.
 | `vision_radius` | Chebyshev distance for partial observability. |
 | `reporting` | File sink always; Gmail sink when `email_enabled` is true. |
 | `strategy` | `heuristic` (default) or `qlearning`. |
+
+## Cost analysis
+
+When LLM-driven agents are enabled, every move triggers one LLM call per
+agent. The dialogue prompt is short (~150 input tokens) and the expected
+response is a single action phrase (~5 output tokens).
+
+Approximate cost for the default 5×5, 6-sub-game match (`max_moves=25`):
+
+| Model | Input $/M | Output $/M | Calls | Input tokens | Output tokens | Estimated cost |
+|-------|-----------|------------|-------|--------------|---------------|----------------|
+| Anthropic Claude Sonnet 5 | ~$3.00 | ~$15.00 | 300 | 45,000 | 1,500 | ~$0.16 |
+| OpenAI GPT-4o | ~$2.50 | ~$10.00 | 300 | 45,000 | 1,500 | ~$0.13 |
+| OpenAI GPT-4o-mini | ~$0.15 | ~$0.60 | 300 | 45,000 | 1,500 | ~$0.01 |
+
+### Optimisation strategies
+
+- Use the **heuristic** or **Q-learning** strategy for local development and
+  sanity checks; it requires zero LLM calls.
+- Reduce `max_moves` or `num_games` for faster, cheaper experiments.
+- Lower the model tier (e.g. GPT-4o-mini) when evaluating prompt quality.
+- Cache prompts and reuse them across symmetric sub-games.
 
 ## Dec-POMDP model
 

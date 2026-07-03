@@ -102,6 +102,14 @@ orchestrator exchanges free natural-language intents between them via the LLM.
 Both modes apply the same partial observability (`vision_radius`) and write
 the same JSON report.
 
+### Official results
+
+The committed [`results/game_report.json`](results/game_report.json) is the
+output of the official **MCP-mode** run — a full 6-sub-game series on the 5×5
+grid played end-to-end by the two agents through real MCP servers and LLM
+natural-language dialogue (not the heuristic demo mode). Re-running either
+mode overwrites the file locally.
+
 Other entry points:
 
 ```bash

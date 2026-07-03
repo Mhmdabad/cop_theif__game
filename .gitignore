@@ -20,8 +20,9 @@ credentials.json
 token.json
 
 # --- Runtime output ---
+# The official run's game_report.json IS committed (submission artifact);
+# only logs stay out of version control.
 results/*.log
-results/*.json
 
 # --- OS / editor ---
 .DS_Store

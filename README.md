@@ -199,24 +199,34 @@ analysis, and heatmaps.
 
 ## Cost analysis
 
-When LLM-driven agents are enabled, every move triggers one LLM call per
-agent. The dialogue prompt is short (~150 input tokens) and the expected
-response is a single action phrase (~5 output tokens).
+When LLM-driven agents are enabled, each turn triggers one LLM call for the
+acting agent. The dialogue prompt is short (~150 input tokens); the visible
+reply is a single action phrase, but **Claude 5-family models think before
+answering by default**, so billed output per call is dominated by thinking
+tokens (~300 tokens/call in practice), not the ~5-token reply.
 
-Approximate cost for the default 5×5, 6-sub-game match (`max_moves=25`):
+Measured from the **official MCP run** (`claude-sonnet-5`, 5×5, 6 sub-games,
+103 moves total → 103 LLM calls):
 
-| Model | Input $/M | Output $/M | Calls | Input tokens | Output tokens | Estimated cost |
-|-------|-----------|------------|-------|--------------|---------------|----------------|
-| Anthropic Claude Sonnet 5 | ~$3.00 | ~$15.00 | 300 | 45,000 | 1,500 | ~$0.16 |
-| OpenAI GPT-4o | ~$2.50 | ~$10.00 | 300 | 45,000 | 1,500 | ~$0.13 |
-| OpenAI GPT-4o-mini | ~$0.15 | ~$0.60 | 300 | 45,000 | 1,500 | ~$0.01 |
+| Model | Input $/M | Output $/M | Calls | Input tokens (est.) | Output tokens (est.) | Estimated cost |
+|-------|-----------|------------|-------|--------------------|---------------------|----------------|
+| Claude Sonnet 5 (intro pricing through 2026-08-31) | $2.00 | $10.00 | 103 | ~15,500 | ~31,000 | **~$0.34** |
+| Claude Sonnet 5 (standard) | $3.00 | $15.00 | 103 | ~15,500 | ~31,000 | ~$0.51 |
+| Claude Haiku 4.5 (cheaper alternative) | $1.00 | $5.00 | 103 | ~15,500 | ~31,000 | ~$0.17 |
+
+Call count is exact (one per move in the official run's turn log); token
+figures are estimates from prompt sizes and typical thinking-block lengths.
+A full development cycle (smoke tests + rehearsal + official run) stayed
+well under one dollar.
 
 ### Optimisation strategies
 
 - Use the **heuristic** or **Q-learning** strategy for local development and
   sanity checks; it requires zero LLM calls.
-- Reduce `max_moves` or `num_games` for faster, cheaper experiments.
-- Lower the model tier (e.g. GPT-4o-mini) when evaluating prompt quality.
+- Reduce `max_moves`, `num_games`, or `grid_size` for faster, cheaper experiments.
+- Thinking tokens dominate cost on Claude 5 models — shorter, more decisive
+  prompts ("Reply with ONLY your intended action") keep thinking brief.
+- Lower the model tier (e.g. Claude Haiku 4.5) when evaluating prompt quality.
 - Cache prompts and reuse them across symmetric sub-games.
 
 ## Dec-POMDP model

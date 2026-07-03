@@ -55,8 +55,10 @@ def test_send_report_builds_and_sends_message(monkeypatch: pytest.MonkeyPatch) -
     decoded = base64.urlsafe_b64decode(raw.encode("ascii"))
     assert b"instructor@example.com" in decoded
     assert b"Subject: Report" in decoded
-    assert b'filename="game_report.json"' in decoded
-    assert b"eyJ3aW5uZXIiOiAiY29wIn0=" in decoded
+    # Assignment §9: the body is ONLY the JSON — no free text, no attachment.
+    assert b'{"winner": "cop"}' in decoded
+    assert b"attached" not in decoded
+    assert b"filename=" not in decoded
 
 
 def test_send_report_wraps_http_error(monkeypatch: pytest.MonkeyPatch) -> None:

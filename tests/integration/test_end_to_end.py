@@ -132,5 +132,5 @@ def test_six_sub_games_produce_valid_report() -> None:
             expected_agent["agent_b"] += sub["cop_score"]
             expected_agent["agent_a"] += sub["thief_score"]
 
-    assert report["totals"]["by_role"] == expected_role
-    assert report["totals"]["by_agent"] == expected_agent
+    assert report["totals"] == expected_role
+    assert report["totals_by_agent"] == expected_agent

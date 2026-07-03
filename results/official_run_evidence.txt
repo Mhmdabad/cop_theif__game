@@ -1,0 +1,190 @@
+
+
++-----------------------------------------------------------------------------+
+|                                                                             |
+
+|
+                                                                             +-----------------------------------------------------------------------------+|
+
+||                                                                                 |                   
+|                                                                              |
+|                       \u2584\u2580 \u2580 \u2584\u2584\u2580\u2580\u2580\u2588  \u2584\u2588\u2580\u2580\u2588\u2580  \u2588\u2580\u2580\u2588\u2580\u2580  \u2580\u2588\u2588\u2580\u2580\u2584 \u2580\u2588\u2588\u2580 \u2584\u2588\u2580\u2580\u2588\u2580  \u2588\u2588\u2580\u2580\u2580\u2588                         |
+\u2588|                       \u2580 \u2588\u2588                        \u2580|
+ |                        \u2588 \u2580\u2588\u2588\u2580  \u2584 \u2584\u2588\u2588\u2580 \u2588  \u2588\u2584 \u2584 \u2588\u2588   \u2580\u2588  \u2588  \u2588\u2588 \u2584\u2580\u2584  \u2588\u2588 \u2580\u2588\u2580\u2584                    \u2584     |
+\u2588|\u2580    \u2580                                                                                                 ||
+
+|                       |                                                          |                                                                         
+||
+                                                                             ||                                                                             
+||
+    |                                                                                                         |
+|                                FastMCP 3.4.2                                FastMCP 3.4.2|                                
+||
+|                                https://gofastmcp.com                                                https://gofastmcp.com                            |    
+||
+                                                                             ||    
+                                                                         ||    
+             |    \U0001f5a5               \U0001f5a5 Server:       Server:     agent-8101, 3.4.2                        agent-8102, 3.4.2                           |    
+||
+                 |\U0001f680                  Deploy free:\U0001f680  https://horizon.prefect.ioDeploy free:                  |
+|                                                                              https://horizon.prefect.io|              
+    +-----------------------------------------------------------------------------+|
+
+
+
+|                                                                             |
++-----------------------------------------------------------------------------+
+
+
+[07/03/26 14:36:44] [07/03/26 14:36:44]INFO      INFO    Starting MCP server  'agent-8101'  transport.py:304
+                    Starting MCP server          with transport 'sse' on                           
+                             http://127.0.0.1:8101/sse                         
+'agent-8102'  transport.py:304
+                             with transport 'sse' on                           
+                             http://127.0.0.1:8102/sse                         
+INFO:     Started server process [22112]
+INFO:     Waiting for application startup.
+INFO:     Started server process [15664]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8101 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://127.0.0.1:8102 (Press CTRL+C to quit)
+INFO:     127.0.0.1:3605 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3610 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3611 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:3606 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45522 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:17686 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45523 - "POST /messages/?session_id=06fcb632662e440384ce48cb3e2939a8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:17686 - "POST /messages/?session_id=ae4c84df043946c098029bb862b282d8 HTTP/1.1" 202 Accepted
+Starting CopThief local run (mcp mode): 6 sub-games on a 5x5 grid
+
+Turn log / Sub-game results:
+  Sub-game 1: cop=A thief=B winner=cop_win moves=10
+  Sub-game 2: cop=A thief=B winner=thief_win moves=25
+  Sub-game 3: cop=A thief=B winner=cop_win moves=12
+  Sub-game 4: cop=B thief=A winner=cop_win moves=20
+  Sub-game 5: cop=B thief=A winner=cop_win moves=12
+  Sub-game 6: cop=B thief=A winner=thief_win moves=25
+
+Totals: {'by_role': {'cop': 90, 'thief': 40}, 'by_agent': {'agent_a': 65, 'agent_b': 65}}
+Report written to results/game_report.json

@@ -1,5 +1,5 @@
 {
-  "group_name": "Swalha-Abad",
+  "group_name": "s82kma9e",
   "students": [
     {
       "id": "314932211",
@@ -17,8 +17,8 @@
     }
   ],
   "github_repo": "https://github.com/Mhmdabad/cop_theif__game",
-  "agent_a_mcp_url": "http://127.0.0.1:8101",
-  "agent_b_mcp_url": "http://127.0.0.1:8102",
+  "cop_mcp_url": "http://127.0.0.1:8101",
+  "thief_mcp_url": "http://127.0.0.1:8102",
   "timezone": "Asia/Jerusalem",
   "sub_games": [
     {
@@ -77,13 +77,14 @@
     }
   ],
   "totals": {
-    "by_role": {
-      "cop": 90,
-      "thief": 40
-    },
-    "by_agent": {
-      "agent_a": 65,
-      "agent_b": 65
-    }
+    "cop": 90,
+    "thief": 40
+  },
+  "team_name": "Swalha-Abad",
+  "agent_a_mcp_url": "http://127.0.0.1:8101",
+  "agent_b_mcp_url": "http://127.0.0.1:8102",
+  "totals_by_agent": {
+    "agent_a": 65,
+    "agent_b": 65
   }
 }

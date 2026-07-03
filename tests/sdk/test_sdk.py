@@ -86,8 +86,8 @@ def test_play_game_swaps_roles_and_builds_report() -> None:
     assert len(report["sub_games"]) == 2
     assert report["sub_games"][0]["cop_agent"] == "A"
     assert report["sub_games"][1]["cop_agent"] == "B"
-    assert report["totals"]["by_role"] == {"cop": 40, "thief": 10}
-    assert report["totals"]["by_agent"] == {"agent_a": 25, "agent_b": 25}
+    assert report["totals"] == {"cop": 40, "thief": 10}
+    assert report["totals_by_agent"] == {"agent_a": 25, "agent_b": 25}
 
 
 def test_build_report_without_playing_is_empty_totals() -> None:
@@ -95,4 +95,4 @@ def test_build_report_without_playing_is_empty_totals() -> None:
     report = sdk.build_report(_metadata(group_name="Empty"))
 
     assert report["sub_games"] == []
-    assert report["totals"]["by_role"] == {"cop": 0, "thief": 0}
+    assert report["totals"] == {"cop": 0, "thief": 0}

@@ -80,7 +80,8 @@ def test_run_game_full_report_over_fake_sessions() -> None:
     assert len(report["sub_games"]) == 6
     # 3/3 role swap: A cops sub-games 1-3, B cops 4-6.
     assert [g["cop_agent"] for g in report["sub_games"]] == ["A", "A", "A", "B", "B", "B"]
-    assert set(report["totals"]["by_agent"]) == {"agent_a", "agent_b"}
+    assert set(report["totals"]) == {"cop", "thief"}
+    assert set(report["totals_by_agent"]) == {"agent_a", "agent_b"}
 
     for session in sessions.values():
         names = {name for name, _ in session.calls}

@@ -110,6 +110,16 @@ grid played end-to-end by the two agents through real MCP servers and LLM
 natural-language dialogue (not the heuristic demo mode). Re-running either
 mode overwrites the file locally.
 
+The report follows the assignment's §9.1 schema exactly (`group_name` is the
+course group ID, `cop_mcp_url`/`thief_mcp_url`, flat `totals`), with the
+role-swap detail (`team_name`, per-agent URLs and totals) appended as extra
+keys that automated parsers ignore.
+
+[`results/official_run_evidence.txt`](results/official_run_evidence.txt) is
+the CLI log of that run — both agent servers starting on their ports, the SSE
+sessions connecting, and 124 MCP tool-call requests — attesting to live
+communication with the MCP servers during the game.
+
 Other entry points:
 
 ```bash

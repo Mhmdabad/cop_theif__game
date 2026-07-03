@@ -136,5 +136,5 @@ def test_sanity_ladder_all_stages_green(tmp_path: Path) -> None:
         assert result["technical_losses"] == 0
         report = result["report"]
         assert len(report["sub_games"]) == 6
-        assert report["totals"]["by_role"]["cop"] >= 0
-        assert report["totals"]["by_role"]["thief"] >= 0
+        assert report["totals"]["cop"] >= 0
+        assert report["totals"]["thief"] >= 0

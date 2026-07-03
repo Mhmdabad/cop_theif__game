@@ -12,7 +12,8 @@
   "mcp": { "agent_a_port": 8101, "agent_b_port": 8102, "host": "127.0.0.1" },
   "roles": { "swap_at_subgame": 4 },
   "report": {
-    "group_name": "Swalha-Abad",
+    "group_name": "s82kma9e",
+    "team_name": "Swalha-Abad",
     "students": [
       {
         "id": "314932211",

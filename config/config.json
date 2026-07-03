@@ -5,10 +5,33 @@
   "num_games": 6,
   "max_barriers": 5,
   "vision_radius": 2,
+  "random_start": true,
+  "min_start_distance": 3,
   "scoring": { "cop_win": 20, "thief_win": 10, "cop_loss": 5, "thief_loss": 5 },
   "llm": { "provider": "anthropic", "model": "claude-sonnet-5", "temperature": 0.7 },
   "mcp": { "agent_a_port": 8101, "agent_b_port": 8102, "host": "127.0.0.1" },
   "roles": { "swap_at_subgame": 4 },
+  "report": {
+    "group_name": "Swalha-Abad",
+    "students": [
+      {
+        "id": "314932211",
+        "first_name_en": "Muhammad",
+        "last_name_en": "Swalha",
+        "first_name_he": "מוחמד",
+        "last_name_he": "סואלחה"
+      },
+      {
+        "id": "323913764",
+        "first_name_en": "mohammed",
+        "last_name_en": "abad",
+        "first_name_he": "מוחמד",
+        "last_name_he": "עבאד"
+      }
+    ],
+    "github_repo": "https://github.com/Mhmdabad/cop_theif__game",
+    "timezone": "Asia/Jerusalem"
+  },
   "reporting": {
     "email_enabled": false,
     "instructor_email": "rmisegal+uoh26b@gmail.com",

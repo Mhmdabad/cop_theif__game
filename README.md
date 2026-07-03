@@ -82,12 +82,25 @@ The command writes `results/game_report.json` and prints a turn log.
 ## Usage and flags
 
 ```bash
+# Heuristic mode — in-process strategies, free, no API key needed
 uv run copthief --config config/config.json
+
+# MCP mode — the assignment's showcase pipeline: spawns the two agent
+# servers as separate processes and drives the natural-language dialogue
+# through the configured LLM (requires ANTHROPIC_API_KEY in .env)
+uv run --env-file .env copthief --mode mcp --config config/config.json
 ```
 
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--config` | `config/config.json` | Path to the JSON configuration file. |
+| `--mode` | `heuristic` | `heuristic`: in-process strategies (free). `mcp`: real MCP servers + LLM dialogue. |
+
+In MCP mode the launcher starts Agent-A (`:8101`) and Agent-B (`:8102`) as
+**separate processes**, authenticates both over their MCP tools, and the
+orchestrator exchanges free natural-language intents between them via the LLM.
+Both modes apply the same partial observability (`vision_radius`) and write
+the same JSON report.
 
 Other entry points:
 

@@ -10,6 +10,25 @@ from dataclasses import dataclass
 from typing import Any
 
 from copthief.services.scoring import ScoreBook, SubGameScore
+from copthief.shared.config import Config
+
+
+def report_metadata(config: Config) -> dict[str, Any]:
+    """Build the report metadata block from the config's ``report`` section.
+
+    Falls back to neutral placeholders when the section is absent (e.g. in
+    minimal test configs) so the report schema stays complete.
+    """
+    report = config.report
+    mcp = config.mcp
+    return {
+        "group_name": report.get("group_name", "Team-Local"),
+        "students": list(report.get("students", [])),
+        "github_repo": report.get("github_repo", ""),
+        "agent_a_mcp_url": f"http://{mcp['host']}:{mcp['agent_a_port']}",
+        "agent_b_mcp_url": f"http://{mcp['host']}:{mcp['agent_b_port']}",
+        "timezone": report.get("timezone", "Asia/Jerusalem"),
+    }
 
 
 @dataclass(frozen=True, slots=True)

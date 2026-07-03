@@ -9,6 +9,7 @@ sub-games (PRD §2.2/§3.7).
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 
 from copthief.constants import MOVE_VECTORS, ActionType, Outcome, Role
@@ -75,6 +76,12 @@ class Orchestrator:
                 )
             except Exception as exc:  # noqa: BLE001 - technical loss catches all
                 technical_losses += 1
+                logging.getLogger(__name__).warning(
+                    "Technical loss in sub-game %d (attempt %d): %r",
+                    sub_game_index,
+                    attempt,
+                    exc,
+                )
                 if attempt == self.max_attempts:
                     raise RuntimeError(
                         f"Sub-game {sub_game_index} failed after {self.max_attempts} attempts"

@@ -2,10 +2,14 @@
 
 A single implementation is launched twice (Agent-A and Agent-B) on separate
 ports. Each instance accepts a role per sub-game and exposes the tool contract
-from PLAN §4.4.
+from PLAN §4.4. Runnable as a standalone process::
+
+    python -m copthief.mcp.agent_server --port 8101 --role cop
 """
 
 from __future__ import annotations
+
+import argparse
 
 from fastmcp import FastMCP
 
@@ -64,3 +68,16 @@ class AgentServer:
     def run(self) -> None:
         """Start the server on the configured port."""
         self.mcp.run(transport="sse", port=self.port)
+
+
+def main(argv: list[str] | None = None) -> None:  # pragma: no cover - process entry
+    """Launch one agent server as a standalone process."""
+    parser = argparse.ArgumentParser(description="CopThief MCP agent server")
+    parser.add_argument("--port", type=int, required=True)
+    parser.add_argument("--role", choices=[r.value for r in Role], default=Role.COP.value)
+    args = parser.parse_args(argv)
+    AgentServer(Role(args.role), args.port).run()
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()

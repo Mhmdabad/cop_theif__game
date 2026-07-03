@@ -23,7 +23,7 @@ def create_strategy(config: dict[str, Any], grid_size: tuple[int, int]) -> Strat
     params = strategy_cfg.get("params", {})
 
     if stype == "heuristic":
-        return HeuristicStrategy(grid_size)
+        return HeuristicStrategy(grid_size, max_barriers=int(config.get("max_barriers", 5)))
     if stype == "qlearning":
         return QLearningStrategy(grid_size, **params)
 

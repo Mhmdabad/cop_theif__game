@@ -67,3 +67,16 @@ class Config:
     @property
     def swap_at_subgame(self) -> int:
         return int(self._data["roles"]["swap_at_subgame"])
+
+    @property
+    def random_start(self) -> bool:
+        return bool(self._data.get("random_start", False))
+
+    @property
+    def min_start_distance(self) -> int:
+        return int(self._data.get("min_start_distance", 3))
+
+    @property
+    def report(self) -> dict[str, Any]:
+        """Submission metadata (group, students, repo); empty when absent."""
+        return dict(self._data.get("report", {}))

@@ -6,13 +6,23 @@ whole submission shares one policy (PLAN §2.3, ADR-5).
 
 from __future__ import annotations
 
+import json
 import logging
 import queue
 import threading
 import time
 from collections import deque
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
+
+
+def default_gatekeeper(rate_limits_config: dict[str, Any] | None = None) -> ApiGatekeeper:
+    """Build a gatekeeper from ``config/rate_limits.json`` unless one is given."""
+    if rate_limits_config is None:
+        path = Path(__file__).resolve().parents[3] / "config" / "rate_limits.json"
+        rate_limits_config = json.loads(path.read_text(encoding="utf-8"))
+    return ApiGatekeeper(rate_limits_config)
 
 
 class ApiGatekeeper:

@@ -26,12 +26,21 @@
       "cop_agent": "A",
       "thief_agent": "B",
       "winner": "cop_win",
-      "moves": 10,
+      "moves": 6,
       "cop_score": 20,
       "thief_score": 5
     },
     {
       "index": 2,
+      "cop_agent": "A",
+      "thief_agent": "B",
+      "winner": "cop_win",
+      "moves": 20,
+      "cop_score": 20,
+      "thief_score": 5
+    },
+    {
+      "index": 3,
       "cop_agent": "A",
       "thief_agent": "B",
       "winner": "thief_win",
@@ -40,20 +49,11 @@
       "thief_score": 10
     },
     {
-      "index": 3,
-      "cop_agent": "A",
-      "thief_agent": "B",
-      "winner": "cop_win",
-      "moves": 12,
-      "cop_score": 20,
-      "thief_score": 5
-    },
-    {
       "index": 4,
       "cop_agent": "B",
       "thief_agent": "A",
       "winner": "cop_win",
-      "moves": 20,
+      "moves": 24,
       "cop_score": 20,
       "thief_score": 5
     },
@@ -62,7 +62,7 @@
       "cop_agent": "B",
       "thief_agent": "A",
       "winner": "cop_win",
-      "moves": 12,
+      "moves": 10,
       "cop_score": 20,
       "thief_score": 5
     },
@@ -70,21 +70,21 @@
       "index": 6,
       "cop_agent": "B",
       "thief_agent": "A",
-      "winner": "thief_win",
-      "moves": 25,
-      "cop_score": 5,
-      "thief_score": 10
+      "winner": "cop_win",
+      "moves": 18,
+      "cop_score": 20,
+      "thief_score": 5
     }
   ],
   "totals": {
-    "cop": 90,
-    "thief": 40
+    "cop": 105,
+    "thief": 35
   },
   "team_name": "Swalha-Abad",
   "agent_a_mcp_url": "http://127.0.0.1:8101",
   "agent_b_mcp_url": "http://127.0.0.1:8102",
   "totals_by_agent": {
-    "agent_a": 65,
-    "agent_b": 65
+    "agent_a": 60,
+    "agent_b": 80
   }
 }

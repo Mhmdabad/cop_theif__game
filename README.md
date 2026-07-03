@@ -117,7 +117,7 @@ keys that automated parsers ignore.
 
 [`results/official_run_evidence.txt`](results/official_run_evidence.txt) is
 the CLI log of that run — both agent servers starting on their ports, the SSE
-sessions connecting, and 124 MCP tool-call requests — attesting to live
+sessions connecting, and 123 MCP tool-call requests — attesting to live
 communication with the MCP servers during the game.
 
 Other entry points:

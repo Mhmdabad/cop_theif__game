@@ -51,26 +51,18 @@ class GmailSender:
     def _service(self) -> Any:
         return build("gmail", "v1", credentials=self._load_credentials())
 
-    def send_report(
-        self,
-        to_email: str,
-        subject: str,
-        report_json: str,
-        *,
-        attachment_filename: str = "game_report.json",
-    ) -> None:
-        """Send ``report_json`` as a JSON attachment to ``to_email``."""
+    def send_report(self, to_email: str, subject: str, report_json: str) -> None:
+        """Send ``report_json`` as the entire email body.
+
+        Assignment §9: the body must contain ONLY the structured JSON report —
+        no free text — so the grading system can parse it automatically. A
+        plain-text single-part message keeps the raw payload unambiguous.
+        """
         message = EmailMessage()
-        message.set_content("Please find the CopThief game report attached.")
+        message.set_content(report_json)
         message["To"] = to_email
         message["From"] = "me"
         message["Subject"] = subject
-        message.add_attachment(
-            report_json.encode("utf-8"),
-            maintype="application",
-            subtype="json",
-            filename=attachment_filename,
-        )
 
         raw = base64.urlsafe_b64encode(message.as_bytes()).decode("ascii")
         try:

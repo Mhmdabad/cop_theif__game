@@ -32,11 +32,19 @@ class AnthropicProvider(LLMProvider):
         kwargs: dict[str, Any] = {
             "model": self._model,
             "max_tokens": 1024,
-            "temperature": self._temperature,
             "messages": [{"role": "user", "content": prompt}],
         }
+        # Claude 5-family models reject the deprecated `temperature` parameter;
+        # only older model families still accept it.
+        if not self._model.startswith(("claude-sonnet-5", "claude-fable-5", "claude-mythos-5")):
+            kwargs["temperature"] = self._temperature
         if tools:
             kwargs["tools"] = tools
 
         response = self._client.messages.create(**kwargs)
-        return response.content[0].text
+        # Claude 5-family models may emit a ThinkingBlock before the text;
+        # return the first text block rather than assuming content[0].
+        for block in response.content:
+            if getattr(block, "type", "") == "text":
+                return block.text
+        raise ValueError("Anthropic response contained no text block")

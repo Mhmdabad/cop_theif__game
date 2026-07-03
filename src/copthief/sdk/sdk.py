@@ -6,19 +6,17 @@ touching engine/orchestrator internals directly (guidelines §4.1; PLAN ADR-5).
 
 from __future__ import annotations
 
-import json
 from collections.abc import Callable
-from pathlib import Path
 from typing import Any
 
 from copthief.constants import Outcome, Role
 from copthief.llm.provider import LLMProvider, create_provider
 from copthief.reporting.game_report import build_report
-from copthief.reporting.sinks import FileReportSink, GmailReportSink, ReportSink
+from copthief.reporting.sinks import ReportSink, default_sinks
 from copthief.services.game_engine import Action, GameEngine
 from copthief.services.scoring import ScoreBook
 from copthief.shared.config import Config
-from copthief.shared.gatekeeper import ApiGatekeeper
+from copthief.shared.gatekeeper import ApiGatekeeper, default_gatekeeper
 
 Strategy = Callable[[Role, GameEngine], Action]
 
@@ -36,33 +34,18 @@ class CopThiefSDK:
         sinks: list[ReportSink] | None = None,
     ):
         self.config = config
-        self.engine = GameEngine(config.grid_size, config.max_moves, config.max_barriers)
+        self.engine = GameEngine(
+            config.grid_size,
+            config.max_moves,
+            config.max_barriers,
+            random_start=config.random_start,
+            min_start_distance=config.min_start_distance,
+        )
         self.scorebook = ScoreBook(config.scoring)
-        self.gatekeeper = gatekeeper or self._default_gatekeeper(rate_limits_config)
+        self.gatekeeper = gatekeeper or default_gatekeeper(rate_limits_config)
         self.provider = provider or create_provider(config.llm)
-        self.sinks = sinks if sinks is not None else self._default_sinks()
+        self.sinks = sinks if sinks is not None else default_sinks(config.reporting)
         self._sub_game_moves: list[int] = []
-
-    @staticmethod
-    def _default_gatekeeper(rate_limits_config: dict[str, Any] | None) -> ApiGatekeeper:
-        if rate_limits_config is None:
-            path = Path(__file__).resolve().parents[3] / "config" / "rate_limits.json"
-            rate_limits_config = json.loads(path.read_text(encoding="utf-8"))
-        return ApiGatekeeper(rate_limits_config)
-
-    def _default_sinks(self) -> list[ReportSink]:
-        """File sink always; Gmail sink only when email is enabled in config."""
-        sinks: list[ReportSink] = [FileReportSink()]
-        reporting = self.config.reporting
-        if reporting.get("email_enabled"):
-            sinks.append(
-                GmailReportSink(
-                    to_email=reporting["instructor_email"],
-                    credentials_path=reporting.get("gmail_credentials_path", "credentials.json"),
-                    token_path=reporting.get("gmail_token_path", "token.json"),
-                )
-            )
-        return sinks
 
     def play_sub_game(
         self,

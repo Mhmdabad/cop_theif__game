@@ -8,6 +8,7 @@ fully deterministic and unit-testable (PRD_game_engine.md §1).
 
 from __future__ import annotations
 
+import random
 from dataclasses import dataclass, field
 
 from copthief.constants import MOVE_VECTORS, ActionType, Outcome, Role
@@ -52,19 +53,42 @@ class GameEngine:
         grid_size: tuple[int, int],
         max_moves: int,
         max_barriers: int = 5,
+        random_start: bool = False,
+        min_start_distance: int = 3,
+        seed: int | None = None,
     ):
         self.grid_size = grid_size
         self.max_moves = max_moves
+        self.random_start = random_start
+        self.min_start_distance = min_start_distance
+        self._rng = random.Random(seed)
         self.barrier_manager = BarrierManager(max_barriers)
         self.state = self._initial_state()
 
     def _initial_state(self) -> GridState:
         rows, cols = self.grid_size
+        cop_pos, thief_pos = (0, 0), (rows - 1, cols - 1)
+        if self.random_start:
+            cop_pos, thief_pos = self._random_positions()
         return GridState(
-            cop_pos=(0, 0),
-            thief_pos=(rows - 1, cols - 1),
+            cop_pos=cop_pos,
+            thief_pos=thief_pos,
             barriers=self.barrier_manager.barriers,
         )
+
+    def _random_positions(self) -> tuple[tuple[int, int], tuple[int, int]]:
+        """Pick distinct start cells at least ``min_start_distance`` apart.
+
+        The distance floor is clamped to what the board can support, so small
+        sanity-ladder grids (2x2) stay valid.
+        """
+        rows, cols = self.grid_size
+        floor = max(1, min(self.min_start_distance, max(rows, cols) - 1))
+        while True:
+            cop = (self._rng.randrange(rows), self._rng.randrange(cols))
+            thief = (self._rng.randrange(rows), self._rng.randrange(cols))
+            if max(abs(cop[0] - thief[0]), abs(cop[1] - thief[1])) >= floor:
+                return cop, thief
 
     def reset(self) -> None:
         """Return the engine to the starting position for a new sub-game."""

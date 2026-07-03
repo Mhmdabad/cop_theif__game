@@ -57,3 +57,17 @@ class GmailReportSink(ReportSink):
             "CopThief Game Report",
             json.dumps(report, indent=2, ensure_ascii=False),
         )
+
+
+def default_sinks(reporting_cfg: dict[str, Any]) -> list[ReportSink]:
+    """File sink always; Gmail sink only when email is enabled (PLAN ADR-7)."""
+    sinks: list[ReportSink] = [FileReportSink()]
+    if reporting_cfg.get("email_enabled"):
+        sinks.append(
+            GmailReportSink(
+                to_email=reporting_cfg["instructor_email"],
+                credentials_path=reporting_cfg.get("gmail_credentials_path", "credentials.json"),
+                token_path=reporting_cfg.get("gmail_token_path", "token.json"),
+            )
+        )
+    return sinks
